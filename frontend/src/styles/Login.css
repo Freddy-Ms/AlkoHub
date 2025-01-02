@@ -1,9 +1,46 @@
 .login-container {
-    max-width: 400px;
-    margin: 100px auto;
-    text-align: center;
-  }
-  .navigation {
-    margin-top: 20px;
-  }
-  
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  color: #ffffff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Odstęp między polami formularza */
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  margin: 5px 0; /* Odstęp wokół inputów */
+  border-radius: 10px; /* Zaokrąglone rogi dla inputów */
+  border: 1px solid #ccc; /* Obramowanie dla inputów */
+}
+
+/* Styl przycisku po najechaniu */
+.primary-button:hover {
+  background-color: #64f67a; /* Kolor tła przy najechaniu */
+}
+
+/* Zmieniamy kolor tekstu w klasie .text */
+.text {
+  color: #ffffff; /* Możesz zmienić kolor na dowolny */
+}
+
+/* Zmieniamy kolor linku */
+.navigation a {
+  color: #ffffff; /* Kolor linku */
+}
+
+/* Zmieniamy kolor linku przy najechaniu */
+.navigation a:hover {
+  color: #00ddff; /* Kolor przy najechaniu */
+}
+
+.error-message {
+  color: #ff4d4d; /* Czerwony kolor dla błędu */
+  margin-top: 10px;
+  font-size: 14px;
+}

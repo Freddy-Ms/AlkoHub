@@ -25,10 +25,10 @@
 
 .filter-container {
   width: 10%; /* Lewa kolumna na filtry */
-  background-color: #919191;
+  background-color: #ffd89e1c;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgb(0, 0, 0);
   text-align: left;
 }
 

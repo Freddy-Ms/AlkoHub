@@ -1,0 +1,14 @@
+.primary-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #0099ff; /* Kolor tła */
+    color: #000000; /* Kolor tekstu */
+    border: none;
+    border-radius: 10px; /* Zaokrąglone rogi */
+    transition: background-color 0.3s; /* Efekt przejścia po najechaniu */
+  }
+
+.primary-button:hover {
+    background-color: #ffffff; /* Kolor tła przy najechaniu */
+  }

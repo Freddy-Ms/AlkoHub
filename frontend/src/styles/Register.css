@@ -1,35 +1,24 @@
 .register-container {
-    max-width: 400px;
-    margin: 100px auto;
-    text-align: center;
-  }
-  
-  .register-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .register-container input, .register-container select {
-    margin: 10px 0;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .primary-button {
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .primary-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .navigation {
-    margin-top: 20px;
-  }
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  color: #ffffff;
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-container input, .register-container select {
+  margin: 5px 0;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px; 
+}
+
+.navigation {
+  margin-top: 20px;
+}
   

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie'; // Import biblioteki do obsługi ciasteczek
 import '../styles/Login.css';
+import '../styles/styles.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const Login = () => {
         setErrorMessage(data.message);
       }
     } catch (error) {
-      setErrorMessage('Wystąpił błąd podczas logowania.');
+      alert('Wystąpił błąd podczas logowania.');
     }
   };
 
@@ -62,7 +63,8 @@ const Login = () => {
       </form>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <div className="navigation">
-        <Link to="/register">Nie masz konta? Zarejestruj się</Link>
+        <span className="text">Nie masz konta?</span>
+        <Link to="/register">Zarejestruj się</Link>
       </div>
     </div>
   );
