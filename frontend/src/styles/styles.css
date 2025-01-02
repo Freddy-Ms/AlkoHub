@@ -12,3 +12,8 @@
 .primary-button:hover {
     background-color: #ffffff; /* Kolor tła przy najechaniu */
   }
+
+h1 {
+  color: #ffffff;
+  margin-top: 25px;
+}

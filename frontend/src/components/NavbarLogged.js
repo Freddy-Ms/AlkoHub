@@ -5,6 +5,7 @@ import '../styles/NavbarLogged.css';
 
 const NavbarLogged = () => {
 
+  // Przycisk z wylogowaniem
   const logoutUser = async () => {
     try {
       const response = await fetch('http://localhost:5000/logout', { method: 'POST' });
@@ -23,10 +24,12 @@ const NavbarLogged = () => {
 
   return (
     <nav className="navbar">
+        <Link to="/history">
+          <button className="primary-button">Historia</button>
+        </Link>
         <Link to="/">
             <span className="navbar-text">AlkoHub</span>
         </Link>
-      
         <button onClick={logoutUser}>Wyloguj się</button>
     </nav>
   );
