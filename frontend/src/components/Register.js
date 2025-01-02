@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Register.css';
 import '../styles/styles.css';
 
@@ -16,6 +16,8 @@ const Register = () => {
   const handleRegisterChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  
+  const navigate = useNavigate();
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ const Register = () => {
       });
       const data = await response.json();
       alert(data.message);
+      navigate('/login');
     } catch (error) {
       alert('Wystąpił błąd podczas rejestracji.');
     }
@@ -81,9 +84,6 @@ const Register = () => {
         </select>
         <button type="submit" className="primary-button">Zarejestruj się</button>
       </form>
-      <div className="navigation">
-        <Link to="/">Powrót na stronę główną</Link>
-      </div>
     </div>
   );
 };
