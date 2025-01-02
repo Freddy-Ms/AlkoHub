@@ -1,18 +1,41 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Import biblioteki do obsługi ciasteczek
 import '../styles/Login.css';
 
 const Login = () => {
-  const [loginData, setLoginData] = useState({ nazwa: '', haslo: '' });
+  const [formData, setFormData] = useState({
+    nazwa: '',
+    haslo: '',
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleLoginChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const loginUser = (e) => {
+  const loginUser = async (e) => {
     e.preventDefault();
-    // Tutaj dodasz funkcję do logowania użytkownika.
-    console.log(loginData);
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Zapisz user ID w ciasteczkach
+        Cookies.set('user_id', data.user_id, { expires: 1 }); // Przechowuj ciasteczko przez 1 dzień
+        alert('Zalogowano pomyślnie!');
+        navigate('/'); // Przekierowanie na stronę główną
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      setErrorMessage('Wystąpił błąd podczas logowania.');
+    }
   };
 
   return (
@@ -22,8 +45,8 @@ const Login = () => {
         <input
           type="text"
           name="nazwa"
-          placeholder="Nazwa użytkownika lub e-mail"
-          value={loginData.nazwa}
+          placeholder="Nazwa użytkownika"
+          value={formData.nazwa}
           onChange={handleLoginChange}
           required
         />
@@ -31,14 +54,16 @@ const Login = () => {
           type="password"
           name="haslo"
           placeholder="Hasło"
-          value={loginData.haslo}
+          value={formData.haslo}
           onChange={handleLoginChange}
           required
         />
         <button type="submit" className="primary-button">Zaloguj się</button>
       </form>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       <div className="navigation">
         <Link to="/register">Nie masz konta? Zarejestruj się</Link>
+        <br />
         <Link to="/">Powrót na stronę główną</Link>
       </div>
     </div>

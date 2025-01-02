@@ -82,7 +82,7 @@ def login():
     
     if user and check_password_hash(user.haslo, data['haslo']):
         session['user_id'] = user.id
-        return jsonify({"message": "Logowanie zakończone sukcesem!", })
+        return jsonify({'message': 'Zalogowano pomyślnie!', 'user_id': user.id}), 200
     return jsonify({"message": "Nieprawidłowe dane logowania."}), 401
 
 @app.route('/logout', methods=['POST'])
