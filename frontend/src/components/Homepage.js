@@ -1,42 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import '../styles/Homepage.css';
 
 const Homepage = () => {
-  const allProducts = [
-    { name: 'Kielecki', description: 'Opis produktu 1', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Żywiec', description: 'Opis produktu 2', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'xd', description: 'Opis produktu 3', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'pyszne', description: 'Opis produktu 4', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 5', description: 'Opis produktu 5', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 6', description: 'Opis produktu 6', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 7', description: 'Opis produktu 7', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 8', description: 'Opis produktu 8', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 9', description: 'Opis produktu 9', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 10', description: 'Opis produktu 10', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 11', description: 'Opis produktu 11', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 12', description: 'Opis produktu 12', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 13', description: 'Opis produktu 13', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 14', description: 'Opis produktu 14', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 15', description: 'Opis produktu 15', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 16', description: 'Opis produktu 16', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 17', description: 'Opis produktu 17', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 18', description: 'Opis produktu 18', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 19', description: 'Opis produktu 19', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 20', description: 'Opis produktu 20', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 21', description: 'Opis produktu 21', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 22', description: 'Opis produktu 22', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 23', description: 'Opis produktu 23', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 24', description: 'Opis produktu 24', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { name: 'Produkt 25', description: 'Opis produktu 25', image: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    
-  ];
+  const [products, setProducts] = useState([]);  // Stan dla produktów
+  const [visibleProducts, setVisibleProducts] = useState(20);  // Stan dla liczby widocznych produktów
+  const [isLoading, setIsLoading] = useState(true);  // Stan ładowania danych
+  const [error, setError] = useState(null);  // Stan błędu (jeśli wystąpi)
 
-  const [visibleProducts, setVisibleProducts] = useState(20);
+  useEffect(() => {
+    // Funkcja do pobierania danych z backendu
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/getProducts');  // Zmienna URL zależna od Twojego backendu
+        if (!response.ok) {
+          throw new Error('Nie udało się pobrać produktów');
+        }
+        const data = await response.json();
+        setProducts(data);  // Ustawiamy dane w stanie
+      } catch (err) {
+        setError(err.message);  // Jeśli wystąpi błąd, zapisujemy go w stanie
+      } finally {
+        setIsLoading(false);  // Po zakończeniu ładowania danych
+      }
+    };
+
+    fetchProducts();  // Uruchamiamy funkcję po załadowaniu komponentu
+  }, []);  // Pusta tablica oznacza, że funkcja wykona się tylko raz po załadowaniu komponentu
 
   const loadMoreProducts = () => {
-    setVisibleProducts(prevVisible => prevVisible + 20);
+    setVisibleProducts(prevVisible => prevVisible + 20);  // Zwiększamy liczbę wyświetlanych produktów
   };
+
+  if (isLoading) {
+    return <p>Ładowanie produktów...</p>;  // Wyświetlamy komunikat ładowania, jeśli dane są pobierane
+  }
+
+  if (error) {
+    return <p>Błąd: {error}</p>;  // Wyświetlamy błąd, jeśli wystąpił
+  }
 
   return (
     <div className="homepage-container">
@@ -83,11 +85,11 @@ const Homepage = () => {
 
       <div className="product-container">
         <div className="product-list">
-          {allProducts.slice(0, visibleProducts).map((product, index) => (
+          {products.slice(0, visibleProducts).map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
         </div>
-        {visibleProducts < allProducts.length && (
+        {visibleProducts < products.length && (
           <button className="load-more-btn" onClick={loadMoreProducts}>
             Pokaż więcej
           </button>
