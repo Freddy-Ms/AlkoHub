@@ -76,8 +76,8 @@ const Register = () => {
         />
         <select name="plec" value={formData.plec} onChange={handleRegisterChange}>
           <option value="">Wybierz płeć</option>
-          <option value="true">Mężczyzna</option>
-          <option value="false">Kobieta</option>
+          <option value="1">Mężczyzna</option>
+          <option value="0">Kobieta</option>
         </select>
         <button type="submit" className="primary-button">Zarejestruj się</button>
       </form>

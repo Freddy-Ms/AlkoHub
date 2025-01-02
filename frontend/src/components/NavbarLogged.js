@@ -12,6 +12,7 @@ const NavbarLogged = () => {
         // Usuń ciasteczko user_id
         Cookies.remove('user_id');
         alert('Wylogowano pomyślnie!');
+        window.location.reload();
       } else {
         alert('Błąd wylogowania.');
       }

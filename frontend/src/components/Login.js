@@ -29,8 +29,9 @@ const Login = () => {
       if (response.ok) {
         // Zapisz user ID w ciasteczkach
         Cookies.set('user_id', data.user_id, { expires: 1 }); // Przechowuj ciasteczko przez 1 dzień
-        alert('Zalogowano pomyślnie!');
+       // alert('Zalogowano pomyślnie!');
         navigate('/'); // Przekierowanie na stronę główną
+        window.location.reload();
       } else {
         setErrorMessage(data.message);
       }

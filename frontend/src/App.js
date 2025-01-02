@@ -9,7 +9,7 @@ import './styles/App.css';
 import Cookies from 'js-cookie';
 
 const App = () => {
-  const isLoggedIn = Object.keys(Cookies.get()).length > 0; // Sprawdza, czy są jakiekolwiek ciasteczka
+  const isLoggedIn = Cookies.get('user_id'); // Sprawdza, czy są jakiekolwiek ciasteczka
 
   return (
     <Router>
