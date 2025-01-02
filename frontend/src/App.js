@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import NavbarLogged from './components/NavbarLogged';
 import './styles/App.css';
 import Cookies from 'js-cookie';
+import History from './components/History';
 
 const App = () => {
   const isLoggedIn = Cookies.get('user_id'); // Sprawdza, czy są jakiekolwiek ciasteczka
@@ -14,12 +15,13 @@ const App = () => {
   return (
     <Router>
       <div>
-      {isLoggedIn ? <NavbarLogged /> : <Navbar />}
+      {isLoggedIn ? <Navbar /> : <NavbarLogged />}
       </div>
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </Router>
   );

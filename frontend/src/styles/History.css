@@ -1,0 +1,76 @@
+/* Responsywność */
+@media (max-width: 768px) {
+  .product-card {
+    padding: 15px; /* Mniejszy padding na mniejszych ekranach */
+    flex-direction: column; /* Produkty wyświetlane jeden pod drugim */
+    align-items: center; /* Wycentrowanie elementów w produkcie */
+  }
+
+  .product-image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 15px;
+  }
+
+  .product-info h2 {
+    font-size: 16px;
+  }
+
+  .product-info p {
+    font-size: 12px;
+  }
+}
+
+.History {
+    text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 10;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.History-list {
+  display: flex;
+  flex-direction: column; /* Produkty w kolumnie */
+  align-items: center; /* Wycentrowanie każdego produktu */
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%; /* Szerokość na 100% */
+}
+
+.History-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  min-width: 95%; /* Upewnienie się, że szerokość wynosi 100% */
+  border-radius: 14px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Wycentrowanie w poziomie */
+}
+
+.History-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-right: 20px;
+  border-radius: 8px;
+}
+
+.History-info {
+  flex: 1;
+  text-align: left;
+}
+
+.History-info h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.History-info p {
+  font-size: 14px;
+  color: #666;
+}
