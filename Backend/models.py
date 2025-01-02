@@ -18,15 +18,15 @@ class Alkohol(db.Model):
     __tablename__ = 'alkohole'
 
     id = db.Column(db.Integer, primary_key=True)
-    rodzaj_alkoholu_id = db.Column(db.Integer, db.ForeignKey('rodzaje_alkoholi.id'))
-    nazwa_alkoholu = db.Column(db.String(255), nullable=False)
+    rodzaj_alkoholu = db.Column(db.Integer, db.ForeignKey('rodzaje_alkoholi.id'))  # Klucz obcy do tabeli 'rodzaje_alkoholi'
+    nazwa_alkoholu = db.Column(db.String(30), nullable=False)
     opis_alkoholu = db.Column(db.Text)
     zawartosc_procentowa = db.Column(db.Float)
     rok_produkcji = db.Column(db.Integer)
     image_url = db.Column(db.String(255))
 
-    # Relacja z tabelą rodzaje_alkoholi (jeśli chcesz również pobierać dane o rodzaju alkoholu)
-    rodzaj_alkoholu = db.relationship('RodzajAlkoholu', backref='alkohole')
+    # Relacja z tabelą rodzaje_alkoholi
+    rodzaj_alkoholu_rel = db.relationship('RodzajAlkoholu', backref='alkohole')
 
 class RodzajAlkoholu(db.Model):
     __tablename__ = 'rodzaje_alkoholi'

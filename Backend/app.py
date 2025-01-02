@@ -72,20 +72,19 @@ def logout():
     return jsonify({"message": "Wylogowanie zakończone sukcesem!"})
 
 @app.route('/getProducts', methods=['GET'])
-def get_alkohole():
-    try:
-        # Pobranie wszystkich alkoholi, tylko odpowiednie kolumny
-        alkohole = Alkohol.query.with_entities(Alkohol.nazwa_alkoholu, Alkohol.zawartosc_procentowa, Alkohol.image_url).all()
+def get_products():
+    categories = request.args.get('categories')  # Pobranie parametrów 'categories' z URL
+    if categories:
+        categories_list = categories.split(',')  # Rozdzielamy kategorie po przecinku
+        # Filtrujemy produkty na podstawie wybranych kategorii
+        produkty = Alkohol.query.join(RodzajAlkoholu).filter(RodzajAlkoholu.nazwa.in_(categories_list)).all()
+    else:
+        produkty = Alkohol.query.all()  # Jeśli brak filtrów, pobieramy wszystkie produkty
 
-        # Zamiana wyników na listę słowników
-        result = [{"nazwa_alkoholu": a.nazwa_alkoholu, "zawartosc_procentowa": a.zawartosc_procentowa, "image_url": a.image_url} for a in alkohole]
-
-        # Zwrócenie danych w formacie JSON
-        return jsonify(result), 200
-
-    except Exception as e:
-        # Obsługa błędów
-        return jsonify({"error": str(e)}), 500
+    # Przygotowujemy odpowiedź
+    result = [{"nazwa_alkoholu": a.nazwa_alkoholu, "zawartosc_procentowa": a.zawartosc_procentowa, "image_url": a.image_url} for a in produkty]
+    
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
