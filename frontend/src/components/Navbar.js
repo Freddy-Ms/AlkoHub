@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
 
@@ -21,9 +22,18 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <Link to="/">Strona główna</Link>
-      {/* Dodaj przycisk wylogowania */}
-      <button onClick={logoutUser}>Wyloguj się</button>
+      
+
+      <Link to="/">
+        <span className="navbar-text">AlkoHub</span>
+      </Link>
+
+      <div className="auth-buttons">
+        <button onClick={logoutUser}>Wyloguj się</button>
+        <Link to="/login">
+          <button className="primary-button">Login</button>
+        </Link>
+      </div>
     </nav>
   );
 };
