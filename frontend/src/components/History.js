@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from "react"; // Importujemy useState
 //import { Link, useNavigate } from 'react-router-dom';
 import '../styles/History.css';
 import '../styles/styles.css';
@@ -11,6 +12,15 @@ const products = [
 ];
 
 const History = () => {
+  const [likedProducts, setLikedProducts] = useState({}); // Stan do przechowywania klikniętych przycisków
+
+  const handleLikeClick = (productId) => {
+    setLikedProducts((prevState) => ({
+      ...prevState,
+      [productId]: !prevState[productId], // Zmiana stanu kliknięcia (toggle)
+    }));
+  };
+
     return (
         <div className="History">
           <h1>Historia</h1>
@@ -22,6 +32,12 @@ const History = () => {
                   <h2>{product.name}</h2>
                   <p>{product.description}</p>
                 </div>
+                <button
+                  className={`like-button ${likedProducts[product.id] ? 'liked' : ''}`}
+                  onClick={() => handleLikeClick(product.id)}
+                >
+                  {likedProducts[product.id] ? 'Polubiono' : 'Polub'}
+                </button>
               </div>
             ))}
           </div>
