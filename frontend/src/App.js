@@ -9,7 +9,7 @@ import './styles/App.css';
 import Cookies from 'js-cookie';
 import History from './components/History';
 import Achievements from './components/Achievements';
-import Profile from './components/Profil';
+import Profile from './components/Profile';
 
 const App = () => {
   const isLoggedIn = Cookies.get('user_id'); // Sprawdza, czy są jakiekolwiek ciasteczka

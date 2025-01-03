@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Profil.css'; // Możesz dodać stylizacje w tym pliku
+import '../styles/Profile.css'; // Możesz dodać stylizacje w tym pliku
 
 const products = [
     { id: 1, name: 'Osiągnięcie 1', description: 'Opis Osiągnięcia 1', imageUrl: 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg'  },
