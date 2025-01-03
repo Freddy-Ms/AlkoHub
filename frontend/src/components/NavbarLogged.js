@@ -31,6 +31,9 @@ const NavbarLogged = () => {
         <Link to="/achievements">
           <button className="primary-button">Osiągnięcia</button>
         </Link>
+        <Link to="/liked">
+          <button className="primary-button">Polubione</button>
+        </Link>
       </div>
         <Link to="/">
             <span className="navbar-text">AlkoHub</span>
