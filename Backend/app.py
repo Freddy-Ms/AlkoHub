@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Alkohol, RodzajAlkoholu, Uzytkownik, Historia
+from models import db, Alkohol, RodzajAlkoholu, Uzytkownik, Historia, Osiagniecie
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -111,5 +111,29 @@ def get_user_history():
         return jsonify({'historia': result}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@app.route('/osiagniecia', methods=['GET'])
+def get_osiagniecia():
+    try:
+        # Pobieramy wszystkie osiągnięcia
+        osiagniecia = Osiagniecie.query.all()
+        
+        osiagniecia_list = []
+        for osiagniecie in osiagniecia:
+            osiagniecia_list.append({
+                'id_osiagniecia': osiagniecie.id_osiagniecia,
+                'rodzaj_alkoholu': osiagniecie.rodzaj_alkoholu,
+                'nazwa_osiagniecia': osiagniecie.nazwa_osiagniecia,
+                'opis_osiagniecia': osiagniecie.opis_osiagniecia,
+                'ilosc_wymagana_ml': osiagniecie.ilosc_wymagana_ml
+            })
+        
+        return jsonify(osiagniecia_list)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)
