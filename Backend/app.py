@@ -1,7 +1,7 @@
 # w app.py
 from flask_cors import CORS
 from flask import Flask, request, jsonify, session
-from models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione
+from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
