@@ -24,13 +24,26 @@ const NavbarLogged = () => {
 
   return (
     <nav className="navbar">
+      <div className="auth-buttons">
         <Link to="/history">
           <button className="primary-button">Historia</button>
         </Link>
+        <Link to="/achievements">
+          <button className="primary-button">Osiągnięcia</button>
+        </Link>
+        <Link to="/liked">
+          <button className="primary-button">Polubione</button>
+        </Link>
+      </div>
         <Link to="/">
             <span className="navbar-text">AlkoHub</span>
         </Link>
+      <div className="auth-buttons">
         <button onClick={logoutUser}>Wyloguj się</button>
+        <Link to="/profile">
+          <button className="primary-button">Profil</button>
+        </Link>
+      </div>
     </nav>
   );
 };
