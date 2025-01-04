@@ -1,51 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/Profile.css'; // Możesz dodać stylizacje w tym pliku
-
-const products = [
-    { id: 1, name: 'Osiągnięcie 1', description: 'Opis Osiągnięcia 1', imageUrl: 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg'  },
-    { id: 2, name: 'Osiągnięcie 2', description: 'Opis Osiągnięcia 2', imageUrl: 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg' },
-    { id: 3, name: 'Osiągnięcie 3', description: 'Opis Osiągnięcia 3', imageUrl: 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg' },
-    { id: 4, name: 'Osiągnięcie 4', description: 'Opis Osiągnięcia 4', imageUrl: 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg' },
-];
+import Cookies from 'js-cookie';
 
 const Profile = () => {
+  const [userInfo, setUserInfo] = useState(null);
+  const [completedAchievements, setCompletedAchievements] = useState([]);
+  const [status, setStatus] = useState("");
+  const [bac, setBac] = useState(null);
+
+  useEffect(() => {
+    const userId = Cookies.get('user_id');
+    if (userId) {
+      // Fetch user data
+      fetchUserInfo(userId);
+      fetchCompletedAchievements(userId);
+      fetchUserHistory24h(userId);
+    }
+  }, []);
+
+  const fetchUserInfo = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/getUserInfo/${userId}`);
+      const data = await response.json();
+      if (data.user_info) {
+        setUserInfo(data.user_info);
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+
+  const fetchCompletedAchievements = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/getCompletedAchievements/${userId}`);
+      const data = await response.json();
+      if (data.completed_achievements) {
+        setCompletedAchievements(data.completed_achievements);
+      }
+    } catch (error) {
+      console.error("Error fetching completed achievements:", error);
+    }
+  };
+
+  const fetchUserHistory24h = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/historia/24h/${userId}`);
+      const data = await response.json();
+      if (data.promile && data.stan) {
+        setBac(data.promile);
+        setStatus(data.stan);
+      }
+    } catch (error) {
+      console.error("Error fetching user history:", error);
+    }
+  };
+
   return (
     <div className="Profile_container">
-        <div className="Profile_header">
+      <div className="Profile_header">
         <h1>Profil</h1>
+      </div>
+
+      <div className="Profile_content">
+        <div className="Profile_section user-data">
+          <h2>Dane użytkownika</h2>
+          {userInfo && (
+            <>
+              <p>Nazwa użytkownika: {userInfo.nazwa}</p>
+              <p>Waga: {userInfo.waga}</p>
+              <p>Wiek: {userInfo.wiek}</p>
+              <p>Płeć: {userInfo.plec}</p>
+              <p>Email: {userInfo.mail}</p>
+            </>
+          )}
         </div>
 
-        <div className="Profile_content">
-            <div className="Profile_section user-data">
-                <h2>Dane użytkownika</h2>
-                <p>Nazwa uytkownika: </p>
-                <p>Waga</p>
-                <p>Wzrost</p>
-                <p>Płeć</p>
-            </div>
-
-            <div className="Profile_section achievements">
-                <h2>Osiągnięcia zdobyte</h2>
-                <div className="Profile-list compact">
-                    {products.map((product) => (
-                        <div key={product.id} className="Profile-card compact">
-                            <img src={product.imageUrl} alt={product.name} className="Profile-image compact" />
-                            <div className="Profile-info compact">
-                                <h3>{product.name}</h3>
-                            </div>
-                        </div>
-                    ))}
+        <div className="Profile_section achievements">
+          <h2>Osiągnięcia zdobyte</h2>
+          <div className="Profile-list compact">
+            {completedAchievements.map((achievement, index) => (
+              <div key={index} className="Profile-card compact">
+                <img src="https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg" alt={achievement.nazwa_osiagniecia} className="Profile-image compact" />
+                <div className="Profile-info compact">
+                  <h3>{achievement.nazwa_osiagniecia}</h3>
+                  <p>Data ukończenia: {achievement.data_ukonczenia}</p>
                 </div>
-            </div>
-
-            <div className="Profile_section status">
-                <h2>Stan</h2>
-                <p>Trzeźwy</p>
-                <p>"Ilość promili: "</p>
-            </div>
+              </div>
+            ))}
+          </div>
         </div>
+
+        <div className="Profile_section status">
+          <h2>Stan</h2>
+          <p>Stan: {status}</p>
+          <p>Ilość promili: {bac}</p>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Profile;

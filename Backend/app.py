@@ -68,6 +68,32 @@ def get_ulubione_alkohole(uzytkownik_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/getUserInfo/<int:uzytkownik_id>', methods=['GET'])
+def get_user_info(uzytkownik_id):
+    try:
+        user_info = Uzytkownik.get_user_info(uzytkownik_id)
+        if not user_info:
+            return jsonify({"message": "Użytkownik nie znaleziony."}), 404
+        return jsonify({"user_info": user_info}), 200
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
+
+
+@app.route('/getCompletedAchievements/<int:uzytkownik_id>', methods=['GET'])
+def get_completed_achievements(uzytkownik_id):
+    try:
+        completed_achievements = Uzytkownik.get_completed_achievements(uzytkownik_id)
+        return jsonify({"completed_achievements": completed_achievements}), 200
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
+    
+
+@app.route('/historia/24h/<int:uzytkownik_id>', methods=['GET'])
+def get_user_history_24h(uzytkownik_id):
+    result = Uzytkownik.get_user_history_24h(uzytkownik_id)
+    return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
