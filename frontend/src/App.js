@@ -13,6 +13,7 @@ import Profile from './components/Profile';
 import Liked from './components/Liked';
 import './styles/styles.css';
 import AdminPage from './components/AdminPage';
+import AddToHistory from './components/AddToHistory';
 
 const App = () => {
   const isLoggedIn = Cookies.get('user_id'); // Sprawdza, czy są jakiekolwiek ciasteczka
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/liked" element={<Liked />} />
         <Route path="/adminPage" element={<AdminPage />} />
+        <Route path="/addToHistory" element={<AddToHistory />} />
       </Routes>
     </Router>
   );

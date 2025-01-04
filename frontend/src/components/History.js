@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import '../styles/History.css';
 import '../styles/styles.css';
 import Cookies from 'js-cookie';
+import { Link } from "react-router-dom";
 
 const History = () => {
   const [history, setHistory] = useState([]); // Stan na dane o historii
@@ -53,6 +54,9 @@ useEffect(() => {
   return (
     <div className="History">
       <h1>Historia</h1>
+      <Link to="/addToHistory">
+        <button className="History_button">Dodaj do historii</button>
+      </Link>
       <div className="History-list">
         {history.map((item, index) => (
           <div key={index} className="History-card">
@@ -66,6 +70,9 @@ useEffect(() => {
               <p>{`Data: ${item.data}`}</p>
               <p>{`Ilość wypitego alkoholu: ${item.ilosc_wypitego_ml} ml`}</p>
             </div>
+            <button 
+              className="delete-button">Usuń
+            </button>
             <button
               className={`like-button ${likedProducts[item.id] ? 'liked' : ''}`}
               onClick={() => handleLikeClick(item.id)}

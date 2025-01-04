@@ -60,3 +60,8 @@ h1 {
 .load-more-btn:hover {
   background-color: #45a049;
 }
+
+h1 {
+  text-align: center; /* Wyśrodkowuje tekst w poziomie */
+  margin-bottom: 10px; /* Odstęp od formularza */
+}

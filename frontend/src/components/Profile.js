@@ -78,12 +78,12 @@ const Profile = () => {
               <p>Płeć: {userInfo.plec}</p>
               <p>Email: {userInfo.mail}</p>
               <p>Ranga: {userInfo.ranga}</p>
-              {role === '3' && (
+              {role === 'Administrator' && (
                 <Link to="/adminPage">
                   <button className="Profile_primary-button">Panel administratora</button>
                 </Link>
               )}
-              {role === '2' && (
+              {role === 'Degustator' && (
                 <Link to="/testerPage">
                   <button className="Profile_primary-button">Panel degustatora</button>
                 </Link>
