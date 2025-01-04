@@ -46,7 +46,7 @@ const Profile = () => {
     try {
       const response = await fetch(`http://localhost:5000/historia/24h/${userId}`);
       const data = await response.json();
-      if (data.promile && data.stan) {
+      if (data.promile !== undefined && data.stan !== undefined) {
         setBac(data.promile);
         setStatus(data.stan);
       }
@@ -80,7 +80,11 @@ const Profile = () => {
           <div className="Profile-list compact">
             {completedAchievements.map((achievement, index) => (
               <div key={index} className="Profile-card compact">
-                <img src="https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg" alt={achievement.nazwa_osiagniecia} className="Profile-image compact" />
+                <img
+                  src="https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg"
+                  alt={achievement.nazwa_osiagniecia}
+                  className="Profile-image compact"
+                />
                 <div className="Profile-info compact">
                   <h3>{achievement.nazwa_osiagniecia}</h3>
                   <p>Data ukończenia: {achievement.data_ukonczenia}</p>
@@ -93,7 +97,7 @@ const Profile = () => {
         <div className="Profile_section status">
           <h2>Stan</h2>
           <p>Stan: {status}</p>
-          <p>Ilość promili: {bac}</p>
+          <p>Ilość promili: {bac !== null ? bac : "Brak danych"}</p>
         </div>
       </div>
     </div>

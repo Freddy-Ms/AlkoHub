@@ -1,4 +1,5 @@
 from . import db
+
 class Historia(db.Model):
     __tablename__ = 'historia'
 
