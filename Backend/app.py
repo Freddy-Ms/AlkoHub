@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Alkohol, RodzajAlkoholu, Uzytkownik, Historia, Osiagniecie
+from models import db, Alkohol, RodzajAlkoholu, Uzytkownik, Historia, Osiagniecie, Ulubione
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -88,14 +88,10 @@ def get_products():
     return jsonify(result)
 
 
-@app.route('/historia', methods=['GET'])
-def get_user_history():
-    user_id = request.args.get('user_id')  # Pobieranie user_id z parametrów URL
-    if not user_id:
-        return jsonify({'error': 'Nie podano user_id.'}), 400
-
+@app.route('/historia/<int:uzytkownik_id>', methods=['GET'])
+def get_user_history(uzytkownik_id):
     try:
-        historia = Historia.query.filter_by(id_uzytkownika=user_id).all()
+        historia = Historia.query.filter_by(id_uzytkownika = uzytkownik_id).all()
         if not historia:
             return jsonify({'message': 'Brak historii dla tego użytkownika.'}), 404
 
@@ -134,6 +130,39 @@ def get_osiagniecia():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@app.route('/ulubione/<int:uzytkownik_id>', methods=['GET'])
+def get_ulubione_alkohole(uzytkownik_id):
+    try:
+        # Pobranie użytkownika
+        uzytkownik = Uzytkownik.query.get(uzytkownik_id)
+        if not uzytkownik:
+            return jsonify({"error": "Użytkownik nie istnieje"}), 404
+        
+        # Pobranie ulubionych alkoholi użytkownika
+        ulubione = db.session.query(Alkohol).join(Ulubione).filter(Ulubione.id_uzytkownika == uzytkownik_id).all()
+        
+        # Sprawdzenie, czy użytkownik ma ulubione alkohole
+        if not ulubione:
+            return jsonify({"message": "Brak ulubionych alkoholi dla tego użytkownika"}), 404
+        
+        # Przygotowanie danych do zwrócenia
+        ulubione_alkohole = [
+            {
+                'id': alkohol.id,
+                'nazwa_alkoholu': alkohol.nazwa_alkoholu,
+                'opis_alkoholu': alkohol.opis_alkoholu,
+                'zawartosc_procentowa': alkohol.zawartosc_procentowa,
+                'rok_produkcji': alkohol.rok_produkcji,
+                "image_url": alkohol.image_url
+            }
+            for alkohol in ulubione
+        ]
+        
+        return jsonify(ulubione_alkohole)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)

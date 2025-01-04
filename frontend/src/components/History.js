@@ -18,7 +18,7 @@ useEffect(() => {
         throw new Error('Nie znaleziono user_id w ciasteczkach.');
       }
 
-      const response = await fetch(`http://localhost:5000/historia?user_id=${userId}`); // Przekazywanie user_id jako parametru
+      const response = await fetch(`http://localhost:5000/historia/${userId}`); // Przekazywanie user_id jako parametru
       if (!response.ok) {
         throw new Error('Błąd podczas pobierania historii.');
       }

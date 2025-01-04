@@ -36,7 +36,7 @@ const Achievements = () => {
                 {achievements.map((achievement) => (
                     <div key={achievement.id_osiagniecia} className="History-card">
                         <img 
-                            src={achievement.image_url || 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg'} 
+                            src={achievement.image_url || 'https://img.freepik.com/darmowe-wektory/trofeum_78370-345.jpg'}  // W przyszłości możliwe dodanie do bazy danych i backendu wyglądu achivki
                             alt={achievement.nazwa_osiagniecia} 
                             className="History-image" 
                         />
