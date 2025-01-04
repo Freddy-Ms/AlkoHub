@@ -26,7 +26,7 @@ def login():
     user = Uzytkownik.login(data['nazwa'], data['haslo'])
     if user:
         print(user.ranga,user.ranga_rel)
-        return jsonify({'message': 'Zalogowano pomyślnie!', 'user_id': user.id, 'user_ranga': user.ranga}), 200
+        return jsonify({'message': 'Zalogowano pomyślnie!', 'user_id': user.id, 'user_ranga': user.ranga_rel.nazwa}), 200
     return jsonify({"message": "Nieprawidłowe dane logowania."}), 401
 
 @app.route('/logout', methods=['POST'])

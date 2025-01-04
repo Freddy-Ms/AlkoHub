@@ -5,6 +5,7 @@ def calculate_bac(uzytkownik_id, historia_data):
     # Pobranie danych o użytkowniku
     waga = Uzytkownik.get_waga(uzytkownik_id)
     plec = Uzytkownik.get_plec(uzytkownik_id)
+    print(plec)
 
     # Ustalenie współczynnika r w zależności od płci
     r = 0.68 if plec  else 0.55
