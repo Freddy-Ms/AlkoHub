@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import '../styles/Homepage.css';
+import '../styles/styles.css';
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);  // Stan dla produktów

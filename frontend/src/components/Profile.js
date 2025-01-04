@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/Profile.css'; // Możesz dodać stylizacje w tym pliku
-import Cookies from 'js-cookie';
-
+import React, { useEffect, useState } from "react";
+import "../styles/Profile.css";
+import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
+const role = Cookies.get('role');
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [completedAchievements, setCompletedAchievements] = useState([]);
   const [status, setStatus] = useState("");
   const [bac, setBac] = useState(null);
-
   useEffect(() => {
-    const userId = Cookies.get('user_id');
+    const userId = Cookies.get("user_id");
     if (userId) {
       // Fetch user data
       fetchUserInfo(userId);
@@ -20,7 +20,9 @@ const Profile = () => {
 
   const fetchUserInfo = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/getUserInfo/${userId}`);
+      const response = await fetch(
+        `http://localhost:5000/getUserInfo/${userId}`
+      );
       const data = await response.json();
       if (data.user_info) {
         setUserInfo(data.user_info);
@@ -32,7 +34,9 @@ const Profile = () => {
 
   const fetchCompletedAchievements = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/getCompletedAchievements/${userId}`);
+      const response = await fetch(
+        `http://localhost:5000/getCompletedAchievements/${userId}`
+      );
       const data = await response.json();
       if (data.completed_achievements) {
         setCompletedAchievements(data.completed_achievements);
@@ -44,7 +48,9 @@ const Profile = () => {
 
   const fetchUserHistory24h = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/historia/24h/${userId}`);
+      const response = await fetch(
+        `http://localhost:5000/historia/24h/${userId}`
+      );
       const data = await response.json();
       if (data.promile !== undefined && data.stan !== undefined) {
         setBac(data.promile);
@@ -71,6 +77,17 @@ const Profile = () => {
               <p>Wiek: {userInfo.wiek}</p>
               <p>Płeć: {userInfo.plec}</p>
               <p>Email: {userInfo.mail}</p>
+              <p>Ranga: {userInfo.ranga}</p>
+              {role === '3' && (
+                <Link to="/adminPage">
+                  <button className="Profile_primary-button">Panel administratora</button>
+                </Link>
+              )}
+              {role === '2' && (
+                <Link to="/testerPage">
+                  <button className="Profile_primary-button">Panel degustatora</button>
+                </Link>
+              )}
             </>
           )}
         </div>

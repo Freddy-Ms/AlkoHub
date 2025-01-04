@@ -6,8 +6,14 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      <div className="auth-buttons">
+        <Link to="/login">
+          <button className="primary-button">Historia</button>
+          <button className="primary-button">Osiągnięcia</button>
+          <button className="primary-button">Polubione</button>
+        </Link>
+      </div>
       
-
       <Link to="/">
         <span className="navbar-text">AlkoHub</span>
       </Link>

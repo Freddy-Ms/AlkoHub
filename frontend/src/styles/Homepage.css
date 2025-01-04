@@ -91,19 +91,3 @@
   margin: 10px;
   width: 15%; /* Można zmienić szerokość, zależnie od liczby produktów w jednym rzędzie */
 }
-
-.load-more-btn {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
-}
-
-.load-more-btn:hover {
-  background-color: #45a049;
-}

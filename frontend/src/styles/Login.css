@@ -19,27 +19,22 @@ input {
   border: 1px solid #ccc; /* Obramowanie dla inputów */
 }
 
-/* Styl przycisku po najechaniu */
-.primary-button:hover {
-  background-color: #64f67a; /* Kolor tła przy najechaniu */
-}
-
 /* Zmieniamy kolor tekstu w klasie .text */
-.text {
+.Login_text {
   color: #ffffff; /* Możesz zmienić kolor na dowolny */
 }
 
 /* Zmieniamy kolor linku */
-.navigation a {
+.Login_navigation a {
   color: #ffffff; /* Kolor linku */
 }
 
 /* Zmieniamy kolor linku przy najechaniu */
-.navigation a:hover {
+.Login_navigation a:hover {
   color: #00ddff; /* Kolor przy najechaniu */
 }
 
-.error-message {
+.Login_error-message {
   color: #ff4d4d; /* Czerwony kolor dla błędu */
   margin-top: 10px;
   font-size: 14px;

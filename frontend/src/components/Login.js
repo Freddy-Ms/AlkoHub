@@ -29,6 +29,7 @@ const Login = () => {
       if (response.ok) {
         // Zapisz user ID w ciasteczkach
         Cookies.set('user_id', data.user_id, { expires: 1 }); // Przechowuj ciasteczko przez 1 dzień
+        Cookies.set('role', data.user_ranga, { expires: 1 });
         navigate('/'); // Przekierowanie na stronę główną
         window.location.reload();
       } else {
@@ -44,7 +45,7 @@ const Login = () => {
       <h1>Logowanie</h1>
       <form onSubmit={loginUser}>
         <input
-          type="text"
+          type="Login_text"
           name="nazwa"
           placeholder="Nazwa użytkownika"
           value={formData.nazwa}
@@ -61,9 +62,9 @@ const Login = () => {
         />
         <button type="submit" className="primary-button">Zaloguj się</button>
       </form>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <div className="navigation">
-        <span className="text">Nie masz konta?</span>
+      {errorMessage && <p className="Login_error-message">{errorMessage}</p>}
+      <div className="Login_navigation">
+        <span className="Login_text">Nie masz konta?</span>
         <Link to="/register">Zarejestruj się</Link>
       </div>
     </div>

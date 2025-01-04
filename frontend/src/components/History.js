@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Dodajemy useEffect
+import React, { useState, useEffect } from "react";
 import '../styles/History.css';
 import '../styles/styles.css';
 import Cookies from 'js-cookie';

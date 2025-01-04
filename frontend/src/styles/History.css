@@ -75,28 +75,3 @@
   font-size: 14px;
   color: #666;
 }
-
-.like-button {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%); /* Wyrównanie przycisku do środka karty w pionie */
-  padding: 8px 12px;
-  background-color: #ff8c00; /* Kolor przycisku */
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.like-button:hover {
-  background-color: #e67e00; /* Zmiana koloru przycisku po najechaniu */
-}
-
-.like-button.liked {
-  background-color: #28a745; /* Zielony kolor dla klikniętego przycisku */
-}
-
-.like-button.liked:hover {
-  background-color: #218838; /* Ciemniejszy zielony kolor na hover */
-}

@@ -11,6 +11,8 @@ import History from './components/History';
 import Achievements from './components/Achievements';
 import Profile from './components/Profile';
 import Liked from './components/Liked';
+import './styles/styles.css';
+import AdminPage from './components/AdminPage';
 
 const App = () => {
   const isLoggedIn = Cookies.get('user_id'); // Sprawdza, czy są jakiekolwiek ciasteczka
@@ -28,6 +30,7 @@ const App = () => {
         <Route path="/achievements" element={<Achievements />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/liked" element={<Liked />} />
+        <Route path="/adminPage" element={<AdminPage />} />
       </Routes>
     </Router>
   );

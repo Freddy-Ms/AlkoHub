@@ -33,6 +33,21 @@
     margin: 10px;
 }
 
+.Profile_primary-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #9fa3a6; /* Kolor tła */
+    color: #000000; /* Kolor tekstu */
+    border: none;
+    border-radius: 10px; /* Zaokrąglone rogi */
+    transition: background-color 0.3s; /* Efekt przejścia po najechaniu */
+}
+
+.Profile_primary-button:hover {
+    background-color: #368be0; /* Kolor tła przy najechaniu */
+}
+
 @media (max-width: 768px) {
     .Profile_section.achievements .Profile-list.compact  {
       padding: 15px; /* Mniejszy padding na mniejszych ekranach */
