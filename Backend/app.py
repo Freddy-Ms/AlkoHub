@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Alkohol, RodzajAlkoholu, Uzytkownik
+from models import db, Alkohol, RodzajAlkoholu, Uzytkownik, Historia
 
 app = Flask(__name__)
-app.secret_key = 'super_secret_key'
+app.secret_key = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Macielixx123@localhost/alkohub'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+ 
 
 CORS(app)
 db.init_app(app)
@@ -86,5 +87,29 @@ def get_products():
     
     return jsonify(result)
 
+
+@app.route('/historia', methods=['GET'])
+def get_user_history():
+    user_id = request.args.get('user_id')  # Pobieranie user_id z parametrów URL
+    if not user_id:
+        return jsonify({'error': 'Nie podano user_id.'}), 400
+
+    try:
+        historia = Historia.query.filter_by(id_uzytkownika=user_id).all()
+        if not historia:
+            return jsonify({'message': 'Brak historii dla tego użytkownika.'}), 404
+
+        result = []
+        for record in historia:
+            result.append({
+                'nazwa_alkoholu': record.alkohol.nazwa_alkoholu,  # Pobieranie nazwy alkoholu
+                'data': record.data.strftime('%Y-%m-%d %H:%M:%S'),
+                'ilosc_wypitego_ml': record.ilosc_wypitego_ml,
+                'image_url': record.alkohol.image_url
+            })
+
+        return jsonify({'historia': result}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)

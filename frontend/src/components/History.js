@@ -1,38 +1,39 @@
-import React from 'react';
-import { useState } from "react"; // Importujemy useState
-//import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react"; // Dodajemy useEffect
 import '../styles/History.css';
 import '../styles/styles.css';
-
-const products = [
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 1', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 2', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 3', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 4', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 5', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 6', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 7', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 8', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 9', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 10', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 11', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 12', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 13', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 14', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 15', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 16', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 17', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 18', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 19', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 20', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 1, name: 'Produkt 1', description: 'Opis produktu 1', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png'  },
-    { id: 2, name: 'Produkt 2', description: 'Opis produktu 2', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 3, name: 'Produkt 3', description: 'Opis produktu 3', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-    { id: 4, name: 'Produkt 4', description: 'Opis produktu 4', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1775/1775321.png' },
-];
+import Cookies from 'js-cookie';
 
 const History = () => {
-  const [likedProducts, setLikedProducts] = useState({}); // Stan do przechowywania klikniętych przycisków
+  const [history, setHistory] = useState([]); // Stan na dane o historii
+  const [likedProducts, setLikedProducts] = useState({}); // Stan na polubienia
+  const [loading, setLoading] = useState(true); // Stan ładowania
+  const [error, setError] = useState(null); // Stan błędów
+
+ // Pobieranie danych z backendu
+useEffect(() => {
+  const fetchHistory = async () => {
+    try {
+      const userId = Cookies.get('user_id'); // Pobieranie user_id z ciasteczek
+      if (!userId) {
+        throw new Error('Nie znaleziono user_id w ciasteczkach.');
+      }
+
+      const response = await fetch(`http://localhost:5000/historia?user_id=${userId}`); // Przekazywanie user_id jako parametru
+      if (!response.ok) {
+        throw new Error('Błąd podczas pobierania historii.');
+      }
+
+      const data = await response.json();
+      setHistory(data.historia); // Ustawienie danych w stanie
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  fetchHistory();
+}, []);
 
   const handleLikeClick = (productId) => {
     setLikedProducts((prevState) => ({
@@ -41,28 +42,41 @@ const History = () => {
     }));
   };
 
-    return (
-        <div className="History">
-          <h1>Historia</h1>
-          <div className="History-list">
-            {products.map((product) => (
-              <div key={product.id} className="History-card">
-                <img src={product.imageUrl} alt={product.name} className="History-image" />
-                <div className="History-info">
-                  <h2>{product.name}</h2>
-                  <p>{product.description}</p>
-                </div>
-                <button
-                  className={`like-button ${likedProducts[product.id] ? 'liked' : ''}`}
-                  onClick={() => handleLikeClick(product.id)}
-                >
-                  {likedProducts[product.id] ? 'Polubiono' : 'Polub'}
-                </button>
-              </div>
-            ))}
+  if (loading) {
+    return <div>Ładowanie...</div>;
+  }
+
+  if (error) {
+    return <div>Błąd: {error}</div>;
+  }
+
+  return (
+    <div className="History">
+      <h1>Historia</h1>
+      <div className="History-list">
+        {history.map((item, index) => (
+          <div key={index} className="History-card">
+            <img
+              src={item.image_url || 'https://via.placeholder.com/150'} // Placeholder, jeśli brak obrazka
+              alt={item.nazwa_alkoholu}
+              className="History-image"
+            />
+            <div className="History-info">
+              <h2>{item.nazwa_alkoholu}</h2>
+              <p>{`Data: ${item.data}`}</p>
+              <p>{`Ilość wypitego alkoholu: ${item.ilosc_wypitego_ml} ml`}</p>
+            </div>
+            <button
+              className={`like-button ${likedProducts[item.id] ? 'liked' : ''}`}
+              onClick={() => handleLikeClick(item.id)}
+            >
+              {likedProducts[item.id] ? 'Polubiono' : 'Polub'}
+            </button>
           </div>
-        </div>
-      );
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default History;

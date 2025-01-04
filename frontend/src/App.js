@@ -18,7 +18,7 @@ const App = () => {
   return (
     <Router>
       <div>
-      {isLoggedIn ? <Navbar /> : <NavbarLogged />}
+      {isLoggedIn ? <NavbarLogged /> : <Navbar />}
       </div>
       <Routes>
         <Route path="/" element={<Homepage />} />
