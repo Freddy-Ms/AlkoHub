@@ -22,8 +22,12 @@ const Liked = () => {
           return;
         }
 
-        // Tworzymy URL, aby pobrać ulubione alkohole użytkownika
-        const response = await fetch(`http://localhost:5000/ulubione/${userId}`);
+        // Tworzymy URL z parametrami
+        const query = selectedCategories.length
+          ? `http://localhost:5000/ulubione/${userId}?categories=${selectedCategories.join(',')}`
+          : `http://localhost:5000/ulubione/${userId}`;  // Jeśli brak kategorii, pobieramy wszystkie produkty
+
+        const response = await fetch(query);
         if (!response.ok) {
           throw new Error('Nie udało się pobrać ulubionych alkoholi');
         }
@@ -38,7 +42,7 @@ const Liked = () => {
     };
 
     fetchProducts();  // Uruchamiamy funkcję po załadowaniu komponentu
-  }, []);  // Ta funkcja uruchomi się tylko raz po załadowaniu komponentu
+  }, [selectedCategories]);  // Hook zależy od `selectedCategories`, więc będzie się uruchamiał za każdym razem, gdy zmienią się kategorie
 
   const loadMoreProducts = () => {
     setVisibleProducts(prevVisible => prevVisible + 20);  // Zwiększamy liczbę wyświetlanych produktów
@@ -67,104 +71,104 @@ const Liked = () => {
 
   return (
     <div className="Profile_container">
-        <div className="Profile_header">
-          <h1>Polubione</h1>
-        </div>
-        <div className="Profile_content">
-            <div className="filter-container">
-              <h3>Filtry</h3>
-              <div className="filter-item">
-                <h4>Rodzaj alkoholu:</h4>
-                <div className="checkbox-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Gin"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Gin')}
-                    />
-                    Gin
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Likier"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Likier')}
-                    />
-                    Likier
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Piwo"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Piwo')}
-                    />
-                    Piwo
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Rum"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Rum')}
-                    />
-                    Rum
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Tequila"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Tequila')}
-                    />
-                    Tequila
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Wino"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Wino')}
-                    />
-                    Wino
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Whisky"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Whisky')}
-                    />
-                    Whisky
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value="Wódka"
-                      onChange={handleCategoryChange}
-                      checked={selectedCategories.includes('Wódka')}
-                    />
-                    Wódka
-                  </label>
-                </div>
-              </div>
+      <div className="Profile_header">
+        <h1>Polubione</h1>
+      </div>
+      <div className="Profile_content">
+        <div className="filter-container">
+          <h3>Filtry</h3>
+          <div className="filter-item">
+            <h4>Rodzaj alkoholu:</h4>
+            <div className="checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  value="Gin"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Gin')}
+                />
+                Gin
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Likier"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Likier')}
+                />
+                Likier
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Piwo"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Piwo')}
+                />
+                Piwo
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Rum"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Rum')}
+                />
+                Rum
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Tequila"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Tequila')}
+                />
+                Tequila
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Wino"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Wino')}
+                />
+                Wino
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Whisky"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Whisky')}
+                />
+                Whisky
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Wódka"
+                  onChange={handleCategoryChange}
+                  checked={selectedCategories.includes('Wódka')}
+                />
+                Wódka
+              </label>
             </div>
+          </div>
+        </div>
 
-            <div className="product-container">
-              <div className="product-list">
-                {products.slice(0, visibleProducts).map((product, index) => (
-                  <ProductCard key={index} product={product} />
-                ))}
-              </div>
-              {visibleProducts < products.length && (
-                <button className="load-more-btn" onClick={loadMoreProducts}>
-                  Pokaż więcej
-                </button>
-              )}
-            </div>
+        <div className="product-container">
+          <div className="product-list">
+            {products.slice(0, visibleProducts).map((product, index) => (
+              <ProductCard key={index} product={product} />
+            ))}
+          </div>
+          {visibleProducts < products.length && (
+            <button className="load-more-btn" onClick={loadMoreProducts}>
+              Pokaż więcej
+            </button>
+          )}
         </div>
+      </div>
     </div>
   );
 };
