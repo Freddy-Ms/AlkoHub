@@ -1,38 +1,79 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/AddToHistory.css";
+import Cookies from 'js-cookie';
 
 const AddToHistory = () => {
-  const SearchableDropdown = ({ data }) => {
-    const [searchTerm, setSearchTerm] = useState(""); // Nazwa wybranego alkoholu
-    const [isOpen, setIsOpen] = useState(false); // Czy lista jest otwarta
-    const [amount, setAmount] = useState(""); // Ilość w ml
-    const [selectedAlcohol, setSelectedAlcohol] = useState(""); // Wybrany alkohol
+  const [data, setData] = useState([]); // Store fetched products
+  const [selectedAlcohol, setSelectedAlcohol] = useState(null); // Store selected alcohol details (name and ID)
+  const [searchTerm, setSearchTerm] = useState(""); // Separate search term for dropdown
+  const [amount, setAmount] = useState("");
+  const [userId, setUserId] = useState(null); // Initialize as null until fetched from cookies
 
-    // Filtrowanie danych na podstawie wprowadzonego tekstu
+  // Fetch user_id from cookies on component mount
+  useEffect(() => {
+    const storedUserId = Cookies.get('user_id');
+    if (storedUserId) {
+      setUserId(parseInt(storedUserId, 10)); // Convert to integer
+    } else {
+      alert("Brak zalogowanego użytkownika. Zaloguj się ponownie.");
+    }
+  }, []);
+
+  // Fetch products from backend
+  useEffect(() => {
+    fetch("http://localhost:5000/getProducts")
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+      })
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
+
+  const handleAddToHistory = () => {
+    if (!userId) {
+      alert("Brak zalogowanego użytkownika.");
+      return;
+    }
+
+    if (selectedAlcohol && amount) {
+      fetch(`http://localhost:5000/add_to_history/${userId}/${selectedAlcohol.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ilosc_wypitego_ml: parseInt(amount, 10),
+        }),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.message) {
+            alert("Dodano pomyślnie");
+          } else {
+            alert("Błąd: " + result.error);
+          }
+        })
+        .catch((error) => console.error("Error adding to history:", error));
+    } else {
+      alert("Wybierz alkohol i podaj ilość.");
+    }
+  };
+
+  const SearchableDropdown = ({ data }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const filteredData = data.filter((item) =>
-      item.toLowerCase().includes(searchTerm.toLowerCase())
+      item.nazwa_alkoholu.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Funkcja obsługująca kliknięcie w element listy
     const handleItemClick = (item) => {
-      setSelectedAlcohol(item);
-      setSearchTerm(item); // Ustawienie terminu wyszukiwania na wybrany alkohol
-      setIsOpen(false); // Zamykanie listy po wybraniu elementu
-    };
-
-    // Funkcja do obsługi zmiany wartości w polu ilości (mililitrów)
-    const handleAmountChange = (e) => {
-      const value = e.target.value;
-      if (/^\d*$/.test(value)) { // Sprawdzenie, czy wpisana wartość to liczba całkowita
-        setAmount(value);
-      }
+      setSelectedAlcohol({ id: item.id, nazwa: item.nazwa_alkoholu }); // Store both ID and name
+      setSearchTerm(item.nazwa_alkoholu); // Update search term to show selected alcohol
+      setIsOpen(false);
     };
 
     const handleFocus = () => setIsOpen(true);
-    const handleBlur = () => setTimeout(() => setIsOpen(false), 200); // Opóźnienie dla lepszej obsługi kliknięć w przyciski
-
-    // Warunek wyświetlania przycisku "Dodaj"
-    const isAddButtonEnabled = selectedAlcohol && amount !== "";
+    const handleBlur = () => setTimeout(() => setIsOpen(false), 200);
 
     return (
       <div className="dropdown-container">
@@ -51,9 +92,9 @@ const AddToHistory = () => {
                 <button
                   key={index}
                   className="dropdown-item"
-                  onClick={() => handleItemClick(item)} // Kliknięcie na przycisk
+                  onClick={() => handleItemClick(item)}
                 >
-                  {item}
+                  {item.nazwa_alkoholu}
                 </button>
               ))
             ) : (
@@ -61,40 +102,39 @@ const AddToHistory = () => {
             )}
           </div>
         )}
-
-        {/* Pokazuje pole do wpisania ilości tylko po wybraniu alkoholu */}
-        {selectedAlcohol && (
-          <div className="amount-container">
-            <label htmlFor="amount">Ilość (ml):</label>
-            <input
-              id="amount"
-              type="text"
-              value={amount}
-              onChange={handleAmountChange}
-              placeholder="Wpisz ilość w ml"
-            />
-          </div>
-        )}
-
-        {/* Przycisk Dodaj - pojawia się dopiero po wybraniu alkoholu i wpisaniu ilości */}
-        {isAddButtonEnabled && (
-          <button 
-            className="add-button"
-            onClick={() => alert(`Dodano ${amount} ml ${selectedAlcohol}`)}
-          >
-            Dodaj
-          </button>
-        )}
       </div>
     );
   };
-
-  const data = ["Wódka", "Piwo", "Wino", "Tequila", "Rum", "Whisky", "Gin"];
 
   return (
     <div className="login-container">
       <h1>Dodawanie alkoholu do historii</h1>
       <SearchableDropdown data={data} />
+      {selectedAlcohol && (
+        <div className="selected-alcohol">
+          <strong>Wybrano alkohol:</strong> {selectedAlcohol.nazwa}
+        </div>
+      )}
+      {selectedAlcohol && (
+        <div className="amount-container">
+          <label htmlFor="amount">Ilość (ml):</label>
+          <input
+            id="amount"
+            type="text"
+            value={amount}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) setAmount(value);
+            }}
+            placeholder="Wpisz ilość w ml"
+          />
+        </div>
+      )}
+      {selectedAlcohol && amount && (
+        <button className="add-button" onClick={handleAddToHistory}>
+          Dodaj
+        </button>
+      )}
     </div>
   );
 };

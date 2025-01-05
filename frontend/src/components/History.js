@@ -10,38 +10,99 @@ const History = () => {
   const [loading, setLoading] = useState(true); // Stan ładowania
   const [error, setError] = useState(null); // Stan błędów
 
- // Pobieranie danych z backendu
-useEffect(() => {
-  const fetchHistory = async () => {
+  // Pobieranie danych z backendu
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const userId = Cookies.get('user_id'); // Pobieranie user_id z ciasteczek
+        if (!userId) {
+          throw new Error('Nie znaleziono user_id w ciasteczkach.');
+        }
+
+        const response = await fetch(`http://localhost:5000/historia/${userId}`); // Przekazywanie user_id jako parametru
+        if (!response.ok) {
+          throw new Error('Błąd podczas pobierania historii.');
+        }
+
+        const data = await response.json();
+        setHistory(data.historia); // Ustawienie danych w stanie
+
+        // Fetch ulubione products
+        const favResponse = await fetch(`http://localhost:5000/ulubione/${userId}`);
+        if (!favResponse.ok) {
+          throw new Error('Błąd podczas pobierania ulubionych.');
+        }
+
+        const favData = await favResponse.json();
+        const likedIds = favData.map(item => item.id);
+        const likedProductsMap = {};
+        likedIds.forEach(id => {
+          likedProductsMap[id] = true; // Zmieniamy stan na polubiony
+        });
+        setLikedProducts(likedProductsMap); // Ustawiamy ulubione produkty
+
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
+  const handleLikeClick = async (productId) => {
     try {
       const userId = Cookies.get('user_id'); // Pobieranie user_id z ciasteczek
       if (!userId) {
         throw new Error('Nie znaleziono user_id w ciasteczkach.');
       }
-
-      const response = await fetch(`http://localhost:5000/historia/${userId}`); // Przekazywanie user_id jako parametru
-      if (!response.ok) {
-        throw new Error('Błąd podczas pobierania historii.');
+  
+      // Sprawdzanie, czy alkohol jest już polubiony
+      const isLiked = likedProducts[productId];
+  
+      if (isLiked) {
+        // Usuń alkohol z ulubionych
+        const response = await fetch(`http://localhost:5000/favourite_delete/${userId}/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          setLikedProducts((prevState) => ({
+            ...prevState,
+            [productId]: false, // Ustawienie stanu na "niepolubiony"
+          }));
+        } else {
+          console.error(data.message);
+        }
+      } else {
+        // Dodaj alkohol do ulubionych
+        const response = await fetch(`http://localhost:5000/favourite_add/${userId}/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          setLikedProducts((prevState) => ({
+            ...prevState,
+            [productId]: true, // Ustawienie stanu na "polubiony"
+          }));
+        } else {
+          console.error(data.message);
+        }
       }
-
-      const data = await response.json();
-      setHistory(data.historia); // Ustawienie danych w stanie
-      setLoading(false);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
+    } catch (error) {
+      console.error('Błąd podczas operacji:', error);
     }
   };
-
-  fetchHistory();
-}, []);
-
-  const handleLikeClick = (productId) => {
-    setLikedProducts((prevState) => ({
-      ...prevState,
-      [productId]: !prevState[productId], // Zmiana stanu kliknięcia (toggle)
-    }));
-  };
+  
 
   if (loading) {
     return <div>Ładowanie...</div>;
@@ -50,6 +111,31 @@ useEffect(() => {
   if (error) {
     return <div>Błąd: {error}</div>;
   }
+
+  const handleDeleteClick = async (productId, date) => {
+    try {
+      const userId = Cookies.get('user_id'); // Pobranie user_id z ciasteczek
+  
+      const response = await fetch(
+        `http://localhost:5000/delete_fromn_history/${userId}/${productId}?data=${encodeURIComponent(date)}`,
+        { method: 'DELETE' }
+      );
+  
+      if (!response.ok) {
+        throw new Error('Błąd podczas usuwania wpisu.');
+      }
+  
+      const result = await response.json();
+      console.log(result.message);
+  
+      // Usuwanie wpisu z lokalnego stanu
+      setHistory((prevHistory) => prevHistory.filter(
+        (item) => !(item.id_alkoholu === productId && item.data === date)
+      ));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   return (
     <div className="History">
@@ -61,7 +147,7 @@ useEffect(() => {
         {history.map((item, index) => (
           <div key={index} className="History-card">
             <img
-              src={item.image_url || 'https://via.placeholder.com/150'} // Placeholder, jeśli brak obrazka
+              src={item.image_url || 'https://via.placeholder.com/150'}
               alt={item.nazwa_alkoholu}
               className="History-image"
             />
@@ -69,15 +155,19 @@ useEffect(() => {
               <h2>{item.nazwa_alkoholu}</h2>
               <p>{`Data: ${item.data}`}</p>
               <p>{`Ilość wypitego alkoholu: ${item.ilosc_wypitego_ml} ml`}</p>
+              <p>{`Zawartość procentowa: ${item.zawartosc_procentowa} %`}</p>
             </div>
-            <button 
-              className="delete-button">Usuń
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteClick(item.id_alkoholu, item.data)}
+            >
+              Usuń
             </button>
             <button
-              className={`like-button ${likedProducts[item.id] ? 'liked' : ''}`}
-              onClick={() => handleLikeClick(item.id)}
+              className={`like-button ${likedProducts[item.id_alkoholu] ? 'liked' : ''}`}
+              onClick={() => handleLikeClick(item.id_alkoholu)}
             >
-              {likedProducts[item.id] ? 'Polubiono' : 'Polub'}
+              {likedProducts[item.id_alkoholu] ? 'Polubiono' : 'Polub'}
             </button>
           </div>
         ))}

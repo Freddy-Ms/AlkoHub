@@ -23,7 +23,7 @@ class Alkohol(db.Model):
             else:
                 produkty = Alkohol.query.all()
 
-            result = [{"nazwa_alkoholu": a.nazwa_alkoholu, "zawartosc_procentowa": a.zawartosc_procentowa, "image_url": a.image_url} for a in produkty]
+            result = [{"nazwa_alkoholu": a.nazwa_alkoholu, "zawartosc_procentowa": a.zawartosc_procentowa, "image_url": a.image_url, "id":a.id} for a in produkty]
             return result
         except Exception as e:
             return str(e)

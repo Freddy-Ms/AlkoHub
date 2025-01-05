@@ -68,15 +68,17 @@ class Uzytkownik(db.Model):
     @staticmethod
     def get_user_history(uzytkownik_id):
         try:
-            historia = Historia.query.filter_by(id_uzytkownika=uzytkownik_id).all()
+            historia = Historia.query.filter_by(id_uzytkownika=uzytkownik_id).order_by(Historia.data.desc()).all()
 
             result = []
             for record in historia:
                 result.append({
+                    'id_alkoholu': record.alkohol.id,
                     'nazwa_alkoholu': record.alkohol.nazwa_alkoholu,
                     'data': record.data.strftime('%Y-%m-%d %H:%M:%S'),
                     'ilosc_wypitego_ml': record.ilosc_wypitego_ml,
-                    'image_url': record.alkohol.image_url
+                    'image_url': record.alkohol.image_url,
+                    'zawartosc_procentowa': record.alkohol.zawartosc_procentowa
                 })
             return result
         except Exception as e:
@@ -134,9 +136,7 @@ class Uzytkownik(db.Model):
                 Historia.id_uzytkownika == uzytkownik_id,
                 Historia.data >= last_24h
             ).all()
-
-            if not historia:
-                return {"message": "Brak historii w ostatnich 24 godzinach."}, 404
+  
 
             # Przygotowanie danych do zwrócenia
             historia_data = []
@@ -160,3 +160,40 @@ class Uzytkownik(db.Model):
 
         except Exception as e:
             return {"error": str(e)}, 500
+    @staticmethod
+    def delete_history_entry(user_id, alkohol_id, data):
+        try:
+            # Wyszukiwanie wpisu w historii
+            record = Historia.query.filter_by(
+                id_uzytkownika=user_id, 
+                id_alkoholu=alkohol_id, 
+                data=data
+            ).first()
+
+            if not record:
+                return {"message": "Nie znaleziono wpisu w historii."}, 404
+
+            # Usuwanie wpisu z bazy danych
+            db.session.delete(record)
+            db.session.commit()
+            return {"message": "Wpis został usunięty."}, 200
+
+        except Exception as e:
+            return {"message": f"Błąd: {str(e)}"}, 500
+
+    @staticmethod
+    def add_to_history(user_id, alkohol_id, ilosc_wypitego_ml):
+        try:
+            # Dodawanie nowego wpisu do historii
+            new_entry = Historia(
+                id_uzytkownika=user_id,
+                id_alkoholu=alkohol_id,
+                data=datetime.now(),
+                ilosc_wypitego_ml=ilosc_wypitego_ml
+            )
+            db.session.add(new_entry)
+            db.session.commit()
+            return {"message": "Wpis został dodany."}, 201
+
+        except Exception as e:
+            return {"message": f"Błąd: {str(e)}"}, 500

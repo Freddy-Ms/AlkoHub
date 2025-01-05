@@ -5,7 +5,6 @@ def calculate_bac(uzytkownik_id, historia_data):
     # Pobranie danych o użytkowniku
     waga = Uzytkownik.get_waga(uzytkownik_id)
     plec = Uzytkownik.get_plec(uzytkownik_id)
-    print(plec)
 
     # Ustalenie współczynnika r w zależności od płci
     r = 0.68 if plec  else 0.55
@@ -15,7 +14,7 @@ def calculate_bac(uzytkownik_id, historia_data):
     # Zmienna do przechowywania łącznej ilości alkoholu
     total_alcohol_grams = 0
     current_time = datetime.now()
-
+    
     # Iterowanie przez historię picia alkoholu
     for record in historia_data:
         zawartosc_procentowa = record['zawartosc_procentowa']
@@ -28,12 +27,13 @@ def calculate_bac(uzytkownik_id, historia_data):
 
     # Obliczanie BAC w oparciu o całkowitą ilość alkoholu
     bac = total_alcohol_grams / (waga * 1000 * r)  # BAC w promilach
-
+    
     # Spadek BAC na podstawie czasu, który minął od spożycia
     time_diff = current_time - datetime.strptime(historia_data[-1]['data'], "%Y-%m-%d %H:%M:%S")
+    print(time_diff)
     hours_since_drinking = time_diff.total_seconds() / 3600  # Czas w godzinach
     bac -= 0.015 * hours_since_drinking  # Spadek BAC o 0.015 na godzinę
-
+    
     if bac < 0:
         bac = 0
     # Ustalenie stanu użytkownika na podstawie BAC
@@ -47,5 +47,5 @@ def calculate_bac(uzytkownik_id, historia_data):
         stan = "Poważna nietrzeźwość"
     else:
         stan = "Stan ciężkiego upojenia"
-
+    print(bac,stan)
     return round(bac, 2), stan
