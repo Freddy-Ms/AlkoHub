@@ -1,10 +1,11 @@
 .primary-button {
     padding: 10px 20px;
+    margin: 0 10px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #0099ff; /* Kolor tła */
-    color: #000000; /* Kolor tekstu */
-    border: none;
+    background-color: #ffffff; /* Biały kolor tła przycisku */
+    color: #000000; /* Czarny kolor tekstu przycisku */
+    border: 1px solid #ffffff; /* Biała ramka wokół przycisku */
     border-radius: 10px; /* Zaokrąglone rogi */
     transition: background-color 0.3s; /* Efekt przejścia po najechaniu */
   }

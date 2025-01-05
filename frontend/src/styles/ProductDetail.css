@@ -10,6 +10,7 @@
   
   /* Biały prostokąt dla szczegółów produktu */
   .product-details {
+    position: relative;
     padding: 20px;
     text-align: center;
     background-color: #fff; /* Białe tło */
@@ -85,4 +86,28 @@
     margin: 5px 0;
   }
 
-  
+/* ----Like button---- */
+.Product_like-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  font-size: 30px;
+  background: none; /* Kolor przycisku */
+  color: rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease; 
+}
+
+.Product_like-button:hover {
+  background-color: none; /* Zmiana koloru przycisku po najechaniu */
+}
+
+.Product_like-button.liked {
+  background-color: none; /* Zielony kolor dla klikniętego przycisku */
+}
+
+.Product_like-button.liked:hover {
+  background-color: none; /* Ciemniejszy zielony kolor na hover */
+}

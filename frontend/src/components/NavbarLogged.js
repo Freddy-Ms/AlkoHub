@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import '../styles/Navbar.css';
+import '../styles/styles.css';
 
 const NavbarLogged = () => {
 
@@ -26,22 +27,22 @@ const NavbarLogged = () => {
     <nav className="navbar">
       <div className="auth-buttons">
         <Link to="/history">
-          <button className="primary-button">Historia</button>
+          <button className="primary-button">🥃</button>
         </Link>
         <Link to="/achievements">
-          <button className="primary-button">Osiągnięcia</button>
+          <button className="primary-button">🏆</button>
         </Link>
         <Link to="/liked">
-          <button className="primary-button">Polubione</button>
+          <button className="primary-button">❤️</button>
         </Link>
       </div>
-        <Link to="/">
-            <span className="navbar-text">AlkoHub</span>
+        <Link to="/" className="no-underline">
+            <h1 className="navbar-text">AlkoHub</h1>
         </Link>
       <div className="auth-buttons">
-        <button onClick={logoutUser}>Wyloguj się</button>
+        <button onClick={logoutUser} className={"primary-button"}>Wyloguj</button>
         <Link to="/profile">
-          <button className="primary-button">Profil</button>
+          <button className="primary-button">👤</button>
         </Link>
       </div>
     </nav>

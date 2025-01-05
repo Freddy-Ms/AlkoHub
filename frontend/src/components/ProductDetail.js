@@ -7,6 +7,7 @@ const ProductDetail = () => {
   const [productData, setProductData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [liked, setLiked] = useState(false); // Stan do przechowywania informacji o polubieniu
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -37,6 +38,10 @@ const ProductDetail = () => {
 
   const { alkohol, opinie, srednia_ocena } = productData;
 
+  const toggleLike = () => {
+    setLiked((prevLiked) => !prevLiked);
+  };
+
   return (
     <div className="container">
       {/* Górna część - informacje o produkcie */}
@@ -53,6 +58,10 @@ const ProductDetail = () => {
             <p className="product-description"> {alkohol.opis}</p>
           </div>
         </div>
+        {/* Przycisk like w prawym górnym rogu */}
+        <button className={`Product_like-button ${liked ? 'liked' : ''}`} onClick={toggleLike}>
+          {liked ? '❤️' : '🖤'} {/* Czarny serce, gdy nie polubione, czerwony serce, gdy polubione */}
+        </button>
       </div>
 
       {/* Dolna część - Opinie */}
