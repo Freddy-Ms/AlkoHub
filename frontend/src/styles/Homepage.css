@@ -48,32 +48,32 @@
   text-align: left;
 }
 
-.checkbox-group {
+.category-buttons {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Wyrównaj elementy do lewej */
-  text-align: left;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between buttons */
+  justify-content: space-between;
 }
 
-.checkbox-group label {
-  display: flex;
-  flex-direction: row; 
-  align-items: center;
-  margin-bottom: 1px;
-  font-size: 0.9rem;
-  text-align: left;
-}
-
-.checkbox-group input {
-  margin-right: auto; /* Odstęp między checkboxem a tekstem */
-}
-
-.filter-container select,
-.filter-container input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #000000;
+.category-button {
+  flex-grow: 1;
+  min-width: 100px;
+  padding: 10px 20px;
+  border: none;
   border-radius: 5px;
+  background-color: #f1f1f1;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.category-button.selected {
+  background-color: #108442; /* Selected button color */
+  color: white;
+}
+
+.category-button:hover {
+  background-color: #939393; /* Hover color */
 }
 
 .product-container {
