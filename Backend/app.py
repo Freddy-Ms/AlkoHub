@@ -1,7 +1,7 @@
 # w app.py
 from flask_cors import CORS
 from flask import Flask, request, jsonify, session
-from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione
+from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu
 from datetime import datetime
 
 app = Flask(__name__)
@@ -125,6 +125,14 @@ def favourite_delete(user_id, alkohol_id):
 def get_product_details(product_id):
     result, status = Alkohol.get_product_details_with_reviews(product_id)
     return jsonify(result), status
+
+@app.route('/alcohol_types', methods=['GET'])
+def get_alcohol_types():
+    try:
+        names = RodzajAlkoholu.get_all_names()
+        return jsonify(names), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
