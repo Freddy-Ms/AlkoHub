@@ -121,5 +121,10 @@ def favourite_delete(user_id, alkohol_id):
     response, status_code = Ulubione.delete_favorite(user_id, alkohol_id)
     return jsonify(response), status_code
 
+@app.route('/get_product_details/<int:product_id>', methods=['GET'])
+def get_product_details(product_id):
+    result, status = Alkohol.get_product_details_with_reviews(product_id)
+    return jsonify(result), status
+
 if __name__ == "__main__":
     app.run(debug=True)

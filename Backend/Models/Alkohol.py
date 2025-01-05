@@ -1,6 +1,8 @@
 from . import db
 from .RodzajAlkoholu import RodzajAlkoholu
 from .Ulubione import Ulubione
+from .Opinia import Opinia
+from .Uzytkownik import Uzytkownik
 class Alkohol(db.Model):
     __tablename__ = 'alkohole'
 
@@ -54,3 +56,48 @@ class Alkohol(db.Model):
             return ulubione_alkohole
         except Exception as e:
             return str(e)
+        
+    @staticmethod
+    def get_product_details_with_reviews(product_id):
+        try:
+            # Pobranie szczegółów alkoholu
+            alkohol = Alkohol.query.filter_by(id=product_id).first()
+            if not alkohol:
+                return {"message": "Nie znaleziono alkoholu o podanym ID."}, 404
+
+            # Pobranie opinii na temat alkoholu
+            opinie = Opinia.query.filter_by(id_alkoholu=product_id).join(Uzytkownik).all()
+
+            # Słownik z danymi o alkoholu
+            alkohol_data = {
+                "nazwa": alkohol.nazwa_alkoholu,
+                "rodzaj": alkohol.rodzaj_alkoholu_rel.nazwa if alkohol.rodzaj_alkoholu_rel else "Nieznany",
+                "opis": alkohol.opis_alkoholu,
+                "zawartosc_procentowa": alkohol.zawartosc_procentowa,
+                "rok_produkcji": alkohol.rok_produkcji,
+                "image_url": alkohol.image_url
+            }
+
+            # Słownik z opiniami
+            opinie_data = []
+            for opinia in opinie:
+                opinie_data.append({
+                    "znacznik_czasu": opinia.znacznik_czasu.strftime('%Y-%m-%d %H:%M:%S'),
+                    "uzytkownik": opinia.uzytkownik.nazwa,
+                    "ocena": opinia.ocena,
+                    "recenzja": opinia.recenzja
+                })
+
+            # Obliczenie średniej oceny
+            srednia_ocena = db.session.query(db.func.avg(Opinia.ocena)).filter(Opinia.id_alkoholu == product_id).scalar()
+            srednia_ocena = round(srednia_ocena, 2) if srednia_ocena else None
+
+            return {
+                "alkohol": alkohol_data,
+                "opinie": opinie_data,
+                "srednia_ocena": srednia_ocena
+            }, 200
+
+        except Exception as e:
+            return {"message": f"Błąd: {str(e)}"}, 500
+
