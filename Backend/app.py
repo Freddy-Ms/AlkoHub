@@ -133,6 +133,14 @@ def get_alcohol_types():
         return jsonify(names), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/is_favorite/<int:uzytkownik_id>/<int:alkohol_id>', methods=['GET'])
+def is_favorite(uzytkownik_id, alkohol_id):
+    try:
+        result = Ulubione.is_favorite(uzytkownik_id, alkohol_id)
+        return jsonify({"is_favorite": result}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

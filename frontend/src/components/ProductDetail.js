@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Dodajemy obsługę cookies
 import '../styles/ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [productData, setProductData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [liked, setLiked] = useState(false); // Stan do przechowywania informacji o polubieniu
+  const [liked, setLiked] = useState(false); // Stan ulubionych
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Stan zalogowania użytkownika
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
         const response = await fetch(`http://localhost:5000/get_product_details/${id}`);
-        if (!response.ok) {
-          throw new Error('Nie udało się pobrać szczegółów produktu');
-        }
+        if (!response.ok) throw new Error('Nie udało się pobrać szczegółów produktu');
         const data = await response.json();
         setProductData(data);
+
+        // Sprawdź, czy produkt jest w ulubionych
+        const userId = Cookies.get('user_id'); // Pobieranie user_id z cookies
+        if (userId) {
+          setIsLoggedIn(true);
+          const likeResponse = await fetch(`http://localhost:5000/is_favorite/${userId}/${id}`);
+          const likeData = await likeResponse.json();
+          setLiked(likeData.is_favorite);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -28,6 +38,26 @@ const ProductDetail = () => {
     fetchProductDetails();
   }, [id]);
 
+  const toggleLike = async () => {
+    const userId = Cookies.get('user_id');
+    if (!userId) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      if (liked) {
+        await fetch(`http://localhost:5000/favourite_delete/${userId}/${id}`, { method: 'POST' });
+        setLiked(false);
+      } else {
+        await fetch(`http://localhost:5000/favourite_add/${userId}/${id}`, { method: 'POST' });
+        setLiked(true);
+      }
+    } catch (error) {
+      console.error('Błąd przy zmianie stanu ulubionych:', error);
+    }
+  };
+
   if (isLoading) {
     return <p>Ładowanie szczegółów produktu...</p>;
   }
@@ -37,10 +67,6 @@ const ProductDetail = () => {
   }
 
   const { alkohol, opinie, srednia_ocena } = productData;
-
-  const toggleLike = () => {
-    setLiked((prevLiked) => !prevLiked);
-  };
 
   return (
     <div className="container">
@@ -58,9 +84,12 @@ const ProductDetail = () => {
             <p className="product-description"> {alkohol.opis}</p>
           </div>
         </div>
-        {/* Przycisk like w prawym górnym rogu */}
-        <button className={`Product_like-button ${liked ? 'liked' : ''}`} onClick={toggleLike}>
-          {liked ? '❤️' : '🖤'} {/* Czarny serce, gdy nie polubione, czerwony serce, gdy polubione */}
+        {/* Przycisk like */}
+        <button
+          className={`Product_like-button ${liked ? 'liked' : ''}`}
+          onClick={toggleLike}
+        >
+          {liked ? '❤️' : '🖤'}
         </button>
       </div>
 

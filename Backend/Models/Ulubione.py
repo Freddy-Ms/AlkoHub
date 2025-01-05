@@ -31,3 +31,11 @@ class Ulubione(db.Model):
             return {"message": "Alkohol został usunięty z ulubionych."}, 200
         except Exception as e:
             return {"message": f"Błąd: {str(e)}"}, 500
+        
+    @staticmethod
+    def is_favorite(uzytkownik_id, alkohol_id):
+        try:
+            favorite = Ulubione.query.filter_by(id_uzytkownika=uzytkownik_id, id_alkoholu=alkohol_id).first()
+            return favorite is not None
+        except Exception as e:
+            return {"message": f"Błąd: {str(e)}"}, 500

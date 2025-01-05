@@ -89,12 +89,12 @@ const Liked = () => {
   return (
     <div className="liked-container">
       <div className="favorites-header">
-        <h1>Liked</h1>
+        <h1>Posmakowane</h1>
       </div>
       <div className="filter-container">
-        <h3>Filters</h3>
+        <h3>Filtry</h3>
         <div className="filter-item">
-          <h4>Type:</h4>
+          <h4>Rodzaj:</h4>
           <div className="category-buttons">
             {categories.map((category, index) => (
               <button
