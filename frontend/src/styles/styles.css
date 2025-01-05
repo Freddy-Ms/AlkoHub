@@ -47,6 +47,7 @@ h1 {
 /* ----Load more---- */
 .load-more-btn {
   padding: 10px 20px;
+  margin: 20px auto;
   background-color: #4CAF50;
   color: white;
   border: none;

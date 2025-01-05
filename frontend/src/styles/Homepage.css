@@ -78,6 +78,7 @@
 
 .product-container {
   width: 80%; /* Prawa kolumna na produkty */
+  margin: auto;
   padding: 0px;
 }
 
@@ -85,9 +86,41 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 16px; /* Dodaj odstępy między elementami */
 }
 
 .product-list .product-card {
-  margin: 10px;
-  width: 15%; /* Można zmienić szerokość, zależnie od liczby produktów w jednym rzędzie */
+  flex: 1 1 calc(20% - 16px); /* Dynamiczne rozmiary kart (20% szerokości z uwzględnieniem odstępów) */
+  box-sizing: border-box;
+  margin: 8px; /* Drobny margines wokół karty */
+  max-width: calc(20% - 16px); /* Ustaw limit szerokości na 20% kontenera */
+  min-width: 200px; /* Minimalna szerokość dla mniejszych ekranów */
+  background-color: #ffffff; /* Kolor tła karty */
+  border: 1px solid #ccc; /* Obramowanie dla lepszej widoczności */
+  border-radius: 8px;
+  overflow: hidden; /* Ukryj tekst wychodzący poza kartę */
+}
+
+.product-link {
+  text-decoration: none; /* Usuwamy podkreślenie tekstu */
+  color: inherit; /* Dziedziczenie koloru z rodzica */
+  display: block; /* Link obejmuje całą kartę */
+}
+
+.product-card {
+  cursor: pointer;  /* Zmieniamy kursor na wskaźnik, aby sugerować, że element jest klikany */
+}
+
+.product-card img {
+  width: 100%; /* Obraz zajmuje pełną szerokość karty */
+  height: auto;
+  display: block;
+}
+
+.product-card h3,
+.product-card p {
+  margin: 8px; /* Marginesy dla tekstu */
+  text-overflow: ellipsis; /* Dodaj wielokropki, jeśli tekst jest za długi */
+  overflow: hidden;
+  white-space: nowrap;
 }

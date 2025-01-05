@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/AddToHistory.css";
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const AddToHistory = () => {
   const [data, setData] = useState([]); // Store fetched products
@@ -8,6 +9,7 @@ const AddToHistory = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Separate search term for dropdown
   const [amount, setAmount] = useState("");
   const [userId, setUserId] = useState(null); // Initialize as null until fetched from cookies
+  const navigate = useNavigate();
 
   // Fetch user_id from cookies on component mount
   useEffect(() => {
@@ -49,6 +51,7 @@ const AddToHistory = () => {
         .then((result) => {
           if (result.message) {
             alert("Dodano pomyślnie");
+            navigate("/history");
           } else {
             alert("Błąd: " + result.error);
           }

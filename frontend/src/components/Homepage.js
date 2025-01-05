@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import { Link } from 'react-router-dom';
 import '../styles/Homepage.css';
 import '../styles/styles.css';
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);  // Stan dla produktów
-  const [visibleProducts, setVisibleProducts] = useState(20);  // Stan dla liczby widocznych produktów
   const [isLoading, setIsLoading] = useState(true);  // Stan ładowania danych
   const [error, setError] = useState(null);  // Stan błędu (jeśli wystąpi)
   const [selectedCategories, setSelectedCategories] = useState([]);  // Stan dla zaznaczonych kategorii
+  const [visibleProducts, setVisibleProducts] = useState(18); 
 
   useEffect(() => {
     // Funkcja do pobierania danych z backendu
@@ -145,8 +146,10 @@ const Homepage = () => {
 
       <div className="product-container">
         <div className="product-list">
-          {products.slice(0, visibleProducts).map((product, index) => (
-            <ProductCard key={index} product={product} />
+        {products.slice(0, visibleProducts).map((product, index) => (
+            <Link key={index} to={`/product/${product.id}`} className="product-link">
+              <ProductCard product={product} />
+            </Link>
           ))}
         </div>
         {visibleProducts < products.length && (
