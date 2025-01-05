@@ -8,9 +8,9 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="auth-buttons">
         <Link to="/login">
-          <button className="primary-button">Historia</button>
-          <button className="primary-button">Osiągnięcia</button>
-          <button className="primary-button">Polubione</button>
+          <button className="primary-button">🥃</button>
+          <button className="primary-button">🏆</button>
+          <button className="primary-button">❤️</button>
         </Link>
       </div>
       
@@ -19,7 +19,7 @@ const Navbar = () => {
       </Link>
 
       <Link to="/login">
-        <button className="primary-button">Login</button>
+        <button className="primary-button">👤</button>
       </Link>
     </nav>
   );
