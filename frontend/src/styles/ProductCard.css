@@ -21,7 +21,25 @@
   }
   
   .product-description {
-    font-size: 0.9rem;
+    font-size: 14px;
     color: #666;
+    display: block;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    white-space: pre-wrap;
+  }
+
+  .product-description strong {
+    margin-right: 5px;
   }
   
+  .product-description p {
+    word-wrap: break-word;  /* Umożliwia zawijanie długich słów */
+    overflow-wrap: break-word;  /* Dodatkowo zapewnia łamanie słów, jeśli są zbyt długie */
+    width: 100%;
+    display: block;
+  }
+
+  .product-description p span {
+    display: block; /* Każde słowo będzie w nowej linii */
+}
