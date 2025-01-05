@@ -63,7 +63,7 @@ const Homepage = () => {
       <div className="filter-container">
         <h3>Filtry</h3>
         <div className="filter-item">
-          <h4>Rodzaj alkoholu:</h4>
+          <h4>Rodzaj:</h4>
           <div className="category-buttons">
           {['Gin', 'Likier', 'Piwo', 'Rum', 'Tequila', 'Wino', 'Whisky', 'Wódka'].map(category => (
             <button

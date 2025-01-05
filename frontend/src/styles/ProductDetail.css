@@ -1,0 +1,88 @@
+/* Główne kontenery */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    min-height: 100vh; /* Wysokość pełnego widoku */
+    box-sizing: border-box;
+  }
+  
+  /* Biały prostokąt dla szczegółów produktu */
+  .product-details {
+    padding: 20px;
+    text-align: center;
+    background-color: #fff; /* Białe tło */
+    border-radius: 8px; /* Zaokrąglenie rogów */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+    border: 1px solid #e0e0e0; /* Opcjonalna ramka */
+  }
+
+  .product-details-content {
+    display: flex;
+    flex-direction: row; /* Obrazek obok treści */
+    gap: 20px;
+    align-items: flex-start; /* Wyrównanie do góry */
+  }  
+  
+  /* Zdjęcie produktu */
+  .product-image {
+    width: auto;
+    height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: left; 
+  }
+
+  /* Atrybuty produktu */
+.product-attributes {
+  display: flex; /* Atrybuty obok siebie */
+  flex-direction: column; /* Atrybuty pod sobą */
+  text-align: left; /* Wyrównanie do lewej */
+  font-size: 16px; /* Zmiana rozmiaru czcionki na 16px */
+  line-height: 0; /* Wysokość linii dla lepszej czytelności */
+  color: #000000; /* Zmiana koloru czcionki na ciemny szary */
+}
+
+/* Opis produktu */
+.product-description {
+  text-align: left;
+  margin-top: 20px;
+  font-family: Arial, sans-serif; /* Zmiana czcionki na Arial */
+  font-size: 16px; /* Zmiana rozmiaru czcionki na 16px */
+  font-weight: normal; /* Normalna grubość czcionki */
+  line-height: 1.5; /* Wysokość linii dla lepszej czytelności */
+  color: #000000; /* Zmiana koloru czcionki na ciemny szary */
+}
+
+  /* Biały prostokąt dla opinii */
+  .opinions {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff; /* Białe tło */
+    border-radius: 8px; /* Zaokrąglenie rogów */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+    border: 1px solid #e0e0e0; /* Opcjonalna ramka */
+    overflow-y: auto;
+    max-height: calc(100vh - 40px); /* Dopasowanie wysokości do okna */
+  }
+  
+  /* Pojedyncza opinia */
+  .opinion-item {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  /* Tytuły i treść w opinii */
+  .opinion-item p {
+    margin: 5px 0;
+  }
+
+  

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import '../styles/ProductDetail.css';
 
 const ProductDetail = () => {
-  const { id } = useParams(); // Pobieramy ID produktu z URL
+  const { id } = useParams();
   const [productData, setProductData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,29 +38,42 @@ const ProductDetail = () => {
   const { alkohol, opinie, srednia_ocena } = productData;
 
   return (
-    <div>
-      <h1>{alkohol.nazwa}</h1>
-      <p>Rodzaj: {alkohol.rodzaj}</p>
-      <p>{alkohol.opis}</p>
-      <p>Zawartość procentowa: {alkohol.zawartosc_procentowa}%</p>
-      <p>Rok produkcji: {alkohol.rok_produkcji}</p>
-      <img src={alkohol.image_url} alt={alkohol.nazwa} />
-      <h2>Opinie:</h2>
-      {opinie.length > 0 ? (
-        <ul>
-          {opinie.map((opinia, index) => (
-            <li key={index}>
-              <p>Data: {opinia.znacznik_czasu}</p>
-              <p>Użytkownik: {opinia.uzytkownik}</p>
-              <p>Ocena: {opinia.ocena}</p>
-              <p>Recenzja: {opinia.recenzja || 'Brak recenzji'}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Brak opinii.</p>
-      )}
-      <h3>Średnia ocena: {srednia_ocena || 'Brak ocen'}</h3>
+    <div className="container">
+      {/* Górna część - informacje o produkcie */}
+      <div className="product-details">
+        <div className="product-details-content">
+          <img src={alkohol.image_url} alt={alkohol.nazwa} className="product-image" />
+          <div className="product-info">
+            <h2>{alkohol.nazwa}</h2>
+            <div className="product-attributes">
+              <p><strong>Rodzaj:</strong> {alkohol.rodzaj}</p>
+              <p><strong>Zawartość procentowa:</strong> {alkohol.zawartosc_procentowa}%</p>
+              <p><strong>Rok produkcji:</strong> {alkohol.rok_produkcji}</p>
+            </div>
+            <p className="product-description"> {alkohol.opis}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Dolna część - Opinie */}
+      <div className="opinions">
+        <h2>Opinie:</h2>
+        {opinie.length > 0 ? (
+          <ul>
+            {opinie.map((opinia, index) => (
+              <li key={index} className="opinion-item">
+                <p><strong>Data:</strong> {opinia.znacznik_czasu}</p>
+                <p><strong>Użytkownik:</strong> {opinia.uzytkownik}</p>
+                <p><strong>Ocena:</strong> {opinia.ocena}</p>
+                <p><strong>Recenzja:</strong> {opinia.recenzja || 'Brak recenzji'}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Brak opinii.</p>
+        )}
+        <h3>Średnia ocena: {srednia_ocena || 'Brak ocen'}</h3>
+      </div>
     </div>
   );
 };
