@@ -78,9 +78,9 @@ const Homepage = () => {
   return (
     <div className="homepage-container">
       <div className="filter-container">
-        <h3>Filters</h3>
+        <h3>Filtry</h3>
         <div className="filter-item">
-          <h4>Type:</h4>
+          <h4>Rodzaj:</h4>
           <div className="category-buttons">
             {categories.map((category, index) => (
               <button
