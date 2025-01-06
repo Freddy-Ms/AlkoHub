@@ -65,7 +65,7 @@
   min-width: 100%;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 14px;
   background-color: #f1f1f1;
   font-size: 1rem;
   cursor: pointer;
@@ -102,7 +102,7 @@
   min-width: 200px; /* Minimalna szerokość dla mniejszych ekranów */
   background-color: #ffffff; /* Kolor tła karty */
   border: 1px solid #ccc; /* Obramowanie dla lepszej widoczności */
-  border-radius: 8px;
+  border-radius: 14px;
   overflow: hidden; /* Ukryj tekst wychodzący poza kartę */
 }
 

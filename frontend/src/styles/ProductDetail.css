@@ -13,8 +13,8 @@
     position: relative;
     padding: 20px;
     text-align: center;
-    background-color: #fff; /* Białe tło */
-    border-radius: 8px; /* Zaokrąglenie rogów */
+    background-color: #ffffff; /* Białe tło */
+    border-radius: 14px; /* Zaokrąglenie rogów */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny cień */
     border: 1px solid #e0e0e0; /* Opcjonalna ramka */
   }
@@ -30,7 +30,7 @@
   .product-image {
     width: auto;
     height: 200px;
-    border-radius: 8px;
+    border-radius: 14px;
     object-fit: cover;
   }
 
@@ -62,12 +62,13 @@
   color: #000000; /* Zmiana koloru czcionki na ciemny szary */
 }
 
+/* ---------OPINION---------- */
   /* Biały prostokąt dla opinii */
   .opinions {
     flex: 1;
     padding: 20px;
     background-color: #fff; /* Białe tło */
-    border-radius: 8px; /* Zaokrąglenie rogów */
+    border-radius: 14px; /* Zaokrąglenie rogów */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny cień */
     border: 1px solid #e0e0e0; /* Opcjonalna ramka */
     overflow-y: auto;
@@ -77,15 +78,94 @@
   /* Pojedyncza opinia */
   .opinion-item {
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    padding: 15px; /* Dodajemy padding dla wygody */
+    background-color: #e1dcdc; /* Szary kolor tła */
+    border-radius: 14px; /* Zaokrąglone rogi */
+    border: 1px solid #ddd; /* Delikatna ramka */
   }
   
-  /* Tytuły i treść w opinii */
   .opinion-item p {
     margin: 5px 0;
   }
 
+  .opinions ul {
+    list-style-type: "👤"; /* Usuwamy domyślną kropkę */
+  }
+
+  .opinions-header {
+    display: flex;
+    justify-content: space-between; /* Elementy po przeciwnych stronach */
+    align-items: center; /* Wyrównanie elementów w pionie */
+    margin-bottom: 20px; /* Odstęp od listy opinii */
+  }
+
+  .add-opinion-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff; /* Biały tekst */
+    background-color: #8e969e; /* Niebieskie tło */
+    border: none;
+    border-radius: 5px; /* Zaokrąglone rogi */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .add-opinion-button:hover {
+    background-color: #35383b; /* Ciemniejszy niebieski na hover */
+  }
+
+  .opinion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e1dcdc;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  .opinion-form textarea {
+    width: 97%;
+    height: 50px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+  }
+  .opinion-form select {
+    padding: 8px;
+    border: 1px solid #bab2b2;
+    border-radius: 5px;
+  }
+  .opinion-form button {
+    align-self: flex-start;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .opinion-form button:hover {
+    background-color: #218838;
+  }
+  .rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 0px;
+    font-size: 24px; /* Rozmiar gwiazdek */
+    cursor: pointer;
+  }
+  
+  .rating-stars .star {
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .rating-stars .star.filled {
+    color: gold;
+  }
+  
 /* ----Like button---- */
 .Product_like-button {
   position: absolute;

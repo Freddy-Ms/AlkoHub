@@ -105,7 +105,7 @@ const Homepage = () => {
         </div>
         {visibleProducts < products.length && (
           <button className="load-more-btn" onClick={loadMoreProducts}>
-            Show more
+            Pokaż więcej
           </button>
         )}
       </div>

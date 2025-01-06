@@ -11,7 +11,10 @@ const ProductDetail = () => {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false); // Stan ulubionych
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Stan zalogowania użytkownika
-
+  const [showAddOpinion, setShowAddOpinion] = useState(false); // Nowy stan
+  const [newOpinion, setNewOpinion] = useState({ ocena: 0, recenzja: '' }); // Nowa opinia
+  const [hoverRating, setHoverRating] = useState(null);
+  
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -68,15 +71,70 @@ const ProductDetail = () => {
 
   const { alkohol, opinie, srednia_ocena } = productData;
 
+  // Funkcja konwertująca ocenę na gwiazdki
+  const renderRatingStars = (rating) => {
+    const fullStars = "⭐".repeat(rating); // Tworzymy pełne gwiazdki
+    const emptyStars = "☆".repeat(5 - rating); // Tworzymy puste gwiazdki
+    return fullStars + emptyStars; // Łączymy pełne i puste gwiazdki
+  };
+
+  const handleAddOpinionClick = () => {
+    const userId = Cookies.get('user_id');
+    if (!userId) {
+      navigate('/login');
+      return;
+    }
+    setShowAddOpinion(!showAddOpinion); // Przełącz widoczność formularza
+  };
+
+  const handleOpinionChange = (e) => {
+    const { name, value } = e.target;
+    setNewOpinion((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitOpinion = async () => {
+    const userId = Cookies.get('user_id');
+    if (!userId) return;
+
+    try {
+      await fetch(`http://localhost:5000/add_opinion`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          produkt_id: id,
+          user_id: userId,
+          ocena: newOpinion.ocena,
+          recenzja: newOpinion.recenzja,
+        }),
+      });
+
+      setProductData((prev) => ({
+        ...prev,
+        opinie: [
+          ...prev.opinie,
+          { ...newOpinion, znacznik_czasu: 'Teraz', uzytkownik: 'Ty' },
+        ],
+      }));
+      setShowAddOpinion(false); // Ukryj formularz po dodaniu opinii
+      setNewOpinion({ ocena: 0, recenzja: '' }); // Zresetuj formularz
+    } catch (error) {
+      console.error('Błąd przy dodawaniu opinii:', error);
+    }
+  };
+
   return (
     <div className="container">
       {/* Górna część - informacje o produkcie */}
       <div className="product-details">
         <div className="product-details-content">
           <img src={alkohol.image_url} alt={alkohol.nazwa} className="product-image" />
+          
           <div className="product-info">
             <h2>{alkohol.nazwa}</h2>
             <div className="product-attributes">
+              <p className="average-rating"> <strong>
+              Średnia ocen: </strong> {srednia_ocena ? `${srednia_ocena} / 5.0` : 'Brak ocen'}
+              </p>
               <p><strong>Rodzaj:</strong> {alkohol.rodzaj}</p>
               <p><strong>Zawartość procentowa:</strong> {alkohol.zawartosc_procentowa}%</p>
               <p><strong>Rok produkcji:</strong> {alkohol.rok_produkcji}</p>
@@ -95,7 +153,39 @@ const ProductDetail = () => {
 
       {/* Dolna część - Opinie */}
       <div className="opinions">
-        <h2>Opinie:</h2>
+        <div className="opinions-header">
+          <h2>Opinie:</h2>
+          <button className="add-opinion-button" onClick={handleAddOpinionClick}>
+            {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
+          </button>
+        </div>
+
+        {showAddOpinion && (
+          <div className="opinion-form">
+            <div className="rating-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`star ${newOpinion.ocena >= star ? 'filled' : ''}`}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(null)}
+                  onClick={() => setNewOpinion({ ...newOpinion, ocena: star })}
+                >
+                  {hoverRating >= star || newOpinion.ocena >= star ? '⭐' : '☆'}
+                </span>
+              ))}
+            </div>
+            <textarea
+              name="recenzja"
+              value={newOpinion.recenzja}
+              onChange={handleOpinionChange}
+              placeholder="Napisz swoją opinię..."
+            />
+            <button onClick={handleSubmitOpinion}>Zatwierdź opinię</button>
+          </div>
+        )}
+
+
         {opinie.length > 0 ? (
           <ul>
             {opinie.map((opinia, index) => (
@@ -110,7 +200,8 @@ const ProductDetail = () => {
         ) : (
           <p>Brak opinii.</p>
         )}
-        <h3>Średnia ocena: {srednia_ocena || 'Brak ocen'}</h3>
+
+        
       </div>
     </div>
   );
