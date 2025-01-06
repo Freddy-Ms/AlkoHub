@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask import Flask, request, jsonify, session
 from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu, Opinia, RangaUzytkownika
 from datetime import datetime
+from Achievments import check_and_assign_achievements, check_and_remove_achievements
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -99,6 +101,11 @@ def get_user_history_24h(uzytkownik_id):
 def delete_history_entry(user_id, alkohol_id):
     data = request.args.get('data')  # Pobranie daty z parametrów zapytania
     response, status_code = Uzytkownik.delete_history_entry(user_id, alkohol_id, data)
+    if status_code == 200: 
+        achievements_response, achievements_status = check_and_remove_achievements(user_id, alkohol_id)
+        if achievements_status != 200:
+            return jsonify(achievements_response), achievements_status
+    
     return jsonify(response), status_code
 
 @app.route('/add_to_history/<int:user_id>/<int:alkohol_id>', methods=['POST'])
@@ -106,6 +113,12 @@ def add_to_history(user_id, alkohol_id):
     data = request.json
     ilosc_wypitego_ml = data['ilosc_wypitego_ml']
     response, status_code = Uzytkownik.add_to_history(user_id, alkohol_id, ilosc_wypitego_ml)
+    
+    if status_code == 201:  # Jeśli dodanie do historii się powiodło
+        achievements_response, achievements_status = check_and_assign_achievements(user_id, alkohol_id)
+        if achievements_status != 200:
+            return jsonify(achievements_response), achievements_status
+    
     return jsonify(response), status_code
 
 @app.route('/favourite_add/<int:user_id>/<int:alkohol_id>', methods=['POST'])
