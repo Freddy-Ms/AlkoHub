@@ -303,7 +303,38 @@ const ProductDetail = () => {
   
       {/* Dolna część - Opinie */}
       <div className="opinions">
-        <h2>Opinie:</h2>
+        <div className="opinions-header">
+          <h2>Opinie:</h2>
+          <button className="add-opinion-button" onClick={handleAddOpinionClick}>
+            {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
+          </button>
+        </div>
+
+        {showAddOpinion && (
+          <div className="opinion-form">
+            <div className="rating-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`star ${newOpinion.ocena >= star ? 'filled' : ''}`}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(null)}
+                  onClick={() => setNewOpinion({ ...newOpinion, ocena: star })}
+                >
+                  {hoverRating >= star || newOpinion.ocena >= star ? '⭐' : '☆'}
+                </span>
+              ))}
+            </div>
+            <textarea
+              name="recenzja"
+              value={newOpinion.recenzja}
+              onChange={handleOpinionChange}
+              placeholder="Napisz swoją opinię..."
+            />
+            <button onClick={handleSubmitOpinion}>Zatwierdź opinię</button>
+          </div>
+        )}
+
         {opinie.length > 0 ? (
           <ul>
             {opinie.map((opinia, index) => (
