@@ -95,7 +95,7 @@
 .delete-button {
   position: absolute;
   top: 50%;
-  right: 100px;
+  right: 90px;
   transform: translateY(-50%); /* Wyrównanie przycisku do środka karty w pionie */
   padding: 8px 12px;
   background-color: #ff0000; /* Kolor przycisku */

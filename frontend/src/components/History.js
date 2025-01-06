@@ -158,7 +158,7 @@ const History = () => {
               className={`like-button ${likedProducts[item.id_alkoholu] ? 'liked' : ''}`}
               onClick={() => handleLikeClick(item.id_alkoholu)}
             >
-              {likedProducts[item.id_alkoholu] ? 'Polubiono' : 'Polub'}
+              {likedProducts[item.id_alkoholu] ? '❤️' : '🖤'}
             </button>
           </div>
         ))}
