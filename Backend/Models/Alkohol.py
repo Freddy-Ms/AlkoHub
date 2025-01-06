@@ -3,6 +3,7 @@ from .RodzajAlkoholu import RodzajAlkoholu
 from .Ulubione import Ulubione
 from .Opinia import Opinia
 from .Uzytkownik import Uzytkownik
+
 class Alkohol(db.Model):
     __tablename__ = 'alkohole'
 
@@ -15,6 +16,7 @@ class Alkohol(db.Model):
     image_url = db.Column(db.String(255))
 
     rodzaj_alkoholu_rel = db.relationship('RodzajAlkoholu', backref='alkohole')
+
 
     @staticmethod
     def get_products(categories=None):
@@ -85,7 +87,8 @@ class Alkohol(db.Model):
                     "znacznik_czasu": opinia.znacznik_czasu.strftime('%Y-%m-%d %H:%M:%S'),
                     "uzytkownik": opinia.uzytkownik.nazwa,
                     "ocena": opinia.ocena,
-                    "recenzja": opinia.recenzja
+                    "recenzja": opinia.recenzja,
+                    "id": opinia.uzytkownik.id
                 })
 
             # Obliczenie średniej oceny
@@ -100,4 +103,72 @@ class Alkohol(db.Model):
 
         except Exception as e:
             return {"message": f"Błąd: {str(e)}"}, 500
+        
+    @staticmethod
+    def delete_alkohol(alkohol_id):
+        try:
+            alkohol = Alkohol.query.get(alkohol_id)
+            if not alkohol:
+                return {"message": "Alkohol nie istnieje."}, 404
+
+            db.session.delete(alkohol)
+            db.session.commit()
+            return {"message": "Alkohol usunięty pomyślnie."}, 200
+
+        except Exception as e:
+            db.session.rollback()  # Wycofanie transakcji w razie błędu
+            return {"message": f"Błąd podczas usuwania alkoholu: {str(e)}"}, 500
+
+    @staticmethod
+    def edit_alkohol(alkohol_id, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji, rodzaj_alkoholu):
+        try:
+            # Wyszukiwanie alkoholu po ID
+            alkohol = Alkohol.query.get(alkohol_id)
+            if not alkohol:
+                return {"message": "Alkohol nie istnieje."}, 404
+            if isinstance(rodzaj_alkoholu, str):  # Sprawdzamy, czy to jest nazwa
+                rodzaj = RodzajAlkoholu.query.filter_by(nazwa=rodzaj_alkoholu).first()
+                if not rodzaj:
+                    return {"message": "Rodzaj alkoholu nie istnieje."}, 404
+                rodzaj_alkoholu = rodzaj.id  # Zmieniamy nazwę na id
+            # Aktualizacja alkoholu tylko, jeśli przekazano wartości
+            if nazwa_alkoholu:
+                alkohol.nazwa_alkoholu = nazwa_alkoholu
+            if opis_alkoholu:
+                alkohol.opis_alkoholu = opis_alkoholu
+            if zawartosc_procentowa:
+                alkohol.zawartosc_procentowa = zawartosc_procentowa
+            if rok_produkcji:
+                alkohol.rok_produkcji = rok_produkcji
+            if rodzaj_alkoholu:
+                alkohol.rodzaj_alkoholu = rodzaj_alkoholu
+
+            # Zatwierdzenie zmian w bazie danych
+            db.session.commit()
+
+            return {"message": "Alkohol zaktualizowany pomyślnie."}, 200
+        
+        except Exception as e:
+            db.session.rollback()  # Wycofanie transakcji w razie błędu
+            return {"message": f"Błąd podczas aktualizacji alkoholu: {str(e)}"}, 500
+
+    @staticmethod
+    def add_alkohol(rodzaj_alkoholu, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji, image_url):
+        try:
+            nowy_alkohol = Alkohol(
+                rodzaj_alkoholu=rodzaj_alkoholu,
+                nazwa_alkoholu=nazwa_alkoholu,
+                opis_alkoholu=opis_alkoholu,
+                zawartosc_procentowa=zawartosc_procentowa,
+                rok_produkcji=rok_produkcji,
+                image_url=image_url
+            )
+            db.session.add(nowy_alkohol)
+            db.session.commit()
+
+            return {"message": "Alkohol dodany pomyślnie", "id": nowy_alkohol.id}, 201
+
+        except Exception as e:
+            db.session.rollback()  # Wycofanie transakcji w razie błędu
+            return {"message": f"Błąd podczas dodawania alkoholu: {str(e)}"}, 500
 

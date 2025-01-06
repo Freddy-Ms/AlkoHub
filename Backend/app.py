@@ -221,5 +221,71 @@ def get_roles():
         return jsonify(roles), 200
     else:
         return jsonify({'message': 'Brak dostępnych rang'}), 404
+    
+@app.route('/delete_alcohol/<int:alkohol_id>', methods=['DELETE'])
+def delete_alkohol(alkohol_id):
+    try:
+        result, status_code = Alkohol.delete_alkohol(alkohol_id)
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
+
+@app.route('/edit_alcohol/<int:alkohol_id>', methods=['PUT'])
+def edit_alkohol(alkohol_id):
+    try:
+        data = request.get_json()  # Pobieramy dane z ciała zapytania
+        nazwa_alkoholu = data.get('nazwa')
+        opis_alkoholu = data.get('opis')
+        zawartosc_procentowa = data.get('zawartosc_procentowa')
+        rok_produkcji = data.get('rok_produkcji')
+        rodzaj_alkoholu = data.get('rodzaj')
+
+        # Przekazujemy dane do metody edycji
+        result, status_code = Alkohol.edit_alkohol(alkohol_id, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji, rodzaj_alkoholu)
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
+
+@app.route('/add_alcohol', methods=['POST'])
+def add_alkohol():
+    try:
+        data = request.get_json()
+        rodzaj_alkoholu = data.get('rodzaj')
+        nazwa_alkoholu = data.get('nazwa')
+        opis_alkoholu = data.get('opis')
+        zawartosc_procentowa = data.get('zawartosc_procentowa')
+        rok_produkcji = data.get('rok_produkcji')
+
+        result, status_code = Alkohol.add_alkohol(rodzaj_alkoholu, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji)
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
+
+@app.route('/delete_opinion/<int:user_id>/<int:alkohol_id>', methods=['DELETE'])
+def delete_opinion(user_id, alkohol_id):
+    # Znajdź opinię użytkownika dla danego alkoholu
+    opinion = Opinia.query.filter_by(id_uzytkownika=user_id, id_alkoholu=alkohol_id).first()
+
+    if opinion is None:
+        # Jeśli opinia nie istnieje, zwróć błąd
+        abort(404, description="Opinion not found")
+
+    # Usuń opinię z bazy danych
+    db.session.delete(opinion)
+    db.session.commit()
+
+    # Zwróć odpowiedź, że opinia została usunięta
+    return jsonify({"message": "Opinion deleted successfully"}), 200
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
