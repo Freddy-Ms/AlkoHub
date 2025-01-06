@@ -213,28 +213,109 @@ margin-right: 10px; /* Odstęp między przyciskami */
 }  
 
 .RoleModal {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    z-index: 10;
+  position: fixed;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border-radius: 8px;
 }
-  
-.UserList {
-    margin-top: 20px;
-}
-  
-.UserList ul {
-    list-style-type: none;
-    padding: 0;
-}
-  
-.UserList li {
+
+.RoleModalHeader {
     display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    justify-content: flex-end;
+  }
+  
+.closeButton {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
 }
+  
+.closeButton:hover {
+    color: #d9534f; /* Kolor przycisku na hover */
+}  
+
+.UserList {
+  margin-top: 0px;
+}
+
+.UserList h3 {
+    margin: 0; /* Usuwamy margines dla nagłówka */
+    padding-bottom: 10px; /* Ustawiamy tylko dolny padding */
+  }
+
+.UserList ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.UserList li {
+    cursor: pointer;
+    width: 80%;
+    padding: 8px;
+    margin: 5px auto; /* Wyśrodkowanie elementów */
+    background-color: #e3e3e3;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.UserList li:hover {
+  background-color: #e0e0e0;
+}
+
+.RoleChange {
+  margin-top: 20px;
+}
+
+.RoleChange select {
+  padding: 8px;
+  font-size: 16px;
+  margin-right: 50px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+}
+
+.RoleChangeButton {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.RoleModal .UserList {
+    position: relative;
+    width: 97%;
+  }
+  
+  .dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .dropdown-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .dropdown-list li:hover {
+    background-color: #f1f1f1;
+  }
+
+  .RoleChange {
+    margin-top: 20px;
+  }

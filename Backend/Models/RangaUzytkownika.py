@@ -11,6 +11,6 @@ class RangaUzytkownika(db.Model):
         rangas = RangaUzytkownika.query.all()
 
         # Przygotuj listę rang z ich id i nazwą
-        result = [{'id': ranga.id, 'nazwa': ranga.nazwa} for ranga in rangas]
+        result = [{'id': ranga.id, 'ranga': ranga.nazwa} for ranga in rangas]
 
         return result
