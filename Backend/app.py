@@ -1,7 +1,7 @@
 # w app.py
 from flask_cors import CORS
 from flask import Flask, request, jsonify, session
-from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu, Opinia
+from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu, Opinia, RangaUzytkownika
 from datetime import datetime
 
 app = Flask(__name__)
@@ -212,5 +212,14 @@ def edit_role(user_id, role_id):
     else:
         return jsonify({'message': 'Użytkownik lub rola nie istnieje'}), 404
 
+@app.route('/roles', methods=['GET'])
+def get_roles():
+    # Wywołanie statycznej metody do pobrania wszystkich rang
+    roles = RangaUzytkownika.get_all_roles()
+
+    if roles:
+        return jsonify(roles), 200
+    else:
+        return jsonify({'message': 'Brak dostępnych rang'}), 404
 if __name__ == "__main__":
     app.run(debug=True)

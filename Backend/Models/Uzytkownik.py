@@ -248,13 +248,8 @@ class Uzytkownik(db.Model):
         if not user:
             return False  # Użytkownik nie istnieje
 
-        # Znajdź rolę po ID
-        new_role = RangaUzytkownika.query.get(role_id)
-        if not new_role:
-            return False  # Rola nie istnieje
-
         # Zaktualizuj rolę użytkownika
-        user.ranga = new_role.id
+        user.ranga = role_id
         db.session.commit()  # Zatwierdzenie zmian w bazie danych
         return True  # Zwróć True, gdy wszystko poszło pomyślnie
 
