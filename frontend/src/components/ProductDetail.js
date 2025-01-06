@@ -348,7 +348,7 @@ const ProductDetail = () => {
             {opinie.map((opinia, index) => (
               <li key={index} className="opinion-item">
                 <div className="opinion-header">
-                  <span className="opinion-user">👤 {opinia.uzytkownik}</span>
+                  <span className="opinion-user">{opinia.uzytkownik}</span>
                   {isAdmin && (
                     <button
                       className="delete-opinion-button"

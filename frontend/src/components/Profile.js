@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Profile.css";
 import Cookies from "js-cookie";
-import { Link, useNavigate } from "react-router-dom"; // Importujemy useNavigate
+import {useNavigate } from "react-router-dom"; // Importujemy useNavigate
 const role = Cookies.get("role");
 
 const Profile = () => {
@@ -23,6 +23,9 @@ const Profile = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Stan do trzymania zapytania wyszukiwania
   const [filteredUsers, setFilteredUsers] = useState(users); // Przechowuje przefiltrowanych użytkowników
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const userId = Cookies.get("user_id");
@@ -35,6 +38,7 @@ const Profile = () => {
     fetchUserHistory24h(userId);
     fetchUsers();
     fetchRoles();
+    fetchFeedback(userId);
   }, [navigate]); // Dodanie `navigate` do zależności
 
   const fetchUserInfo = async (userId) => {
@@ -108,6 +112,23 @@ const Profile = () => {
     }
   };
 
+  const fetchFeedback = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/get_all_opinions/${userId}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Błąd:", errorData.message);
+        setFeedbackList([]);
+        return;
+      }
+      const data = await response.json();
+      setFeedbackList(data || []);
+    } catch (error) {
+      console.error("Błąd podczas pobierania opinii:", error);
+      setFeedbackList([]);
+    }
+  };  
+  
   const handleEditClick = () => {
     setIsEditing(true); // Włącza tryb edycji
   };
@@ -179,7 +200,7 @@ const Profile = () => {
         data.message === "Rola użytkownika została pomyślnie zaktualizowana"
       ) {
         alert("Rola została zaktualizowana!");
-        handleRoleModalToggle(); // Zamknięcie okna po zapisaniu zmian
+        handleRoleModalToggle();
         window.location.reload();
       } else {
         alert("Wystąpił problem podczas zmiany roli.");
@@ -203,6 +224,36 @@ const Profile = () => {
       setIsDropdownOpen(true);
     } else {
       setIsDropdownOpen(false);
+    }
+  };
+
+  const handleEditOpinionClick = (feedback) => {
+    setSelectedFeedback(feedback);
+    setIsEditModalOpen(true);
+  };
+  
+  const handleSaveEdit = async () => {
+    const userId = Cookies.get("user_id");
+    try {
+      const response = await fetch(`/update_opinion/${userId}/${selectedFeedback.id_alkoholu}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recenzja: selectedFeedback.recenzja,
+        }),
+      });
+
+      if (response.ok) {
+        // Aktualizowanie stanu i zamknięcie modalu
+        setIsEditModalOpen(false);
+        window.location.href = 'http://localhost:3000';
+      } else {
+        console.error('Błąd zapisywania opinii');
+      }
+    } catch (error) {
+      console.error('Błąd zapisu: ', error);
     }
   };
 
@@ -311,6 +362,76 @@ const Profile = () => {
           </button>
         )}
       </div>
+      {/* Sekcja z opiniami */}
+      <div className="FeedbackSection">
+        <h3>Opinie użytkownika:</h3>
+        {feedbackList.length > 0 ? (
+          feedbackList.map((feedback, index) => (
+            <div key={index} className="FeedbackCard">
+              <a href={`/product/${feedback.id_alkoholu}`} className="FeedbackImageLink">
+                <img 
+                  src={feedback.image_url} 
+                  alt={feedback.nazwa_alkoholu} 
+                  className="FeedbackImage" 
+                />
+              </a>
+              <div className="FeedbackDetails">
+                <p><strong>Produkt:</strong> {feedback.nazwa_alkoholu}</p>
+                {isEditModalOpen && selectedFeedback?.id === feedback.id ? (
+                  <>
+                    <p>
+                      <strong>Ocena:</strong>
+                      <input
+                        type="number"
+                        name="ocena"
+                        value={selectedFeedback?.ocena || ''}
+                        onChange={handleChange}
+                        min="1"
+                        max="10"
+                      />
+                    </p>
+                    <textarea
+                      name="recenzja"
+                      value={selectedFeedback?.recenzja || ''}
+                      onChange={handleChange}
+                      className="FeedbackTextArea"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <p><strong>Ocena:</strong> {feedback.ocena}</p>
+                    <p><strong>Komentarz:</strong> {feedback.recenzja}</p>
+                  </>
+                )}
+                <p><strong>Dodano:</strong> {new Date(feedback.znacznik_czasu).toLocaleDateString()}</p>
+              </div>
+              <button 
+                className="EditOpinionButton"
+                onClick={() => handleEditOpinionClick(feedback)}
+              >
+                Edytuj
+              </button>
+              {isEditModalOpen && (
+                <div className="EditModal">
+                  <div className="ModalContent">
+                    <h4>Edytuj opinię</h4>
+                    <textarea 
+                      className="EditOpinionTextarea"
+                      value={selectedFeedback?.recenzja || ''}
+                      onChange={(e) => setSelectedFeedback({...selectedFeedback, recenzja: e.target.value})}
+                    />
+                    <button className="EditOpinionButton" onClick={handleSaveEdit}>Zapisz</button>
+                    <button className="EditOpinionButton" onClick={() => setIsEditModalOpen(false)}>Anuluj</button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ))
+        ) : (
+          <p>Użytkownik nie dodał jeszcze żadnych opinii.</p>
+        )}
+      </div>
       {/* Okienko do edycji ról */}
       {isRoleModalOpen && (
         <div className="RoleModal">
@@ -328,26 +449,29 @@ const Profile = () => {
             />
             {isDropdownOpen && (
               <ul className="dropdown-list">
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user) => (
-                    <li key={user.id} onClick={() => handleUserSelect(user)}>
-                      {user.nazwa} ({user.ranga})
-                    </li>
-                  ))
-                ) : (
-                  <li>Brak pasujących użytkowników</li>
-                )}
-              </ul>
+              {(searchQuery ? filteredUsers : users).length ? (
+                (searchQuery ? filteredUsers : users).map((user) => (
+                  <li key={user.id} onClick={() => handleUserSelect(user)}>
+                    {user.nazwa} ({user.ranga})
+                  </li>
+                ))
+              ) : (
+                <li>Brak pasujących użytkowników</li>
+              )}
+            </ul>
             )}
           </div>
 
           {selectedUser && (
           <div className="RoleChange">
-            <h4>Wybierz rolę dla: {selectedUser.nazwa}</h4>
+            <h4>Wybierz rolę dla: {selectedUser.nazwa} ({selectedUser.ranga})</h4>
             <select
-              value={selectedRole}
+              value={selectedRole || ""}
               onChange={(e) => setSelectedRole(e.target.value)}
             >
+              <option value="" disabled>
+                Wybierz
+              </option>
               {roles.length > 0 ? (
                 roles.map((role) => (
                   <option key={role.id} value={role.id}>
@@ -358,11 +482,9 @@ const Profile = () => {
                 <option disabled>Brak dostępnych ról</option>
               )}
             </select>
-          </div>
-          )}
-          <div className="RolecChangeButton">
             <button className="Profile_primary-button" onClick={handleRoleChange}>Zmień rolę</button>
           </div>
+          )}
         </div>
       )}
     </div>

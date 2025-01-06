@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const AddToHistory = () => {
   const [data, setData] = useState([]); // Store fetched products
   const [selectedAlcohol, setSelectedAlcohol] = useState(null); // Store selected alcohol details (name and ID)
-  const [searchTerm, setSearchTerm] = useState(""); // Separate search term for dropdown
   const [amount, setAmount] = useState(""); // Amount of alcohol in ml
   const [userId, setUserId] = useState(null); // Initialize as null until fetched from cookies
   const navigate = useNavigate();

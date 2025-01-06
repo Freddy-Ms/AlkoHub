@@ -67,11 +67,7 @@ class Opinia(db.Model):
 
             if opinia:
                 # Jeśli opinia istnieje, zwróć ją
-                return {
-                    'exists': True,
-                    'ocena': opinia.ocena,
-                    'recenzja': opinia.recenzja
-                }
+                return {'exists': True}
             else:
                 # Jeśli opinia nie istnieje
                 return {'exists': False}
