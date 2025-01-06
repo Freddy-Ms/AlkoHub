@@ -145,7 +145,7 @@ const ProductDetail = () => {
 
   const handleDeleteOpinion = async (opiniaId) => {
     try {
-      const response = await fetch(`http://localhost:5000/delete_opinion/${opiniaId}`, {
+      const response = await fetch(`http://localhost:5000/delete_opinion/${opiniaId}/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Nie udało się usunąć opinii');
@@ -179,6 +179,7 @@ const ProductDetail = () => {
       zawartosc_procentowa: alkohol.zawartosc_procentowa,
       rok_produkcji: alkohol.rok_produkcji,
       opis: alkohol.opis,
+      image: alkohol.image_url,
     });
   };
   
@@ -193,6 +194,7 @@ const ProductDetail = () => {
       });
       if (!response.ok) throw new Error('Nie udało się zapisać zmian');
       setIsEditing(false);
+      window.location.reload()
       // Możesz dodać jakąś logikę, np. przekierowanie lub odświeżenie strony
     } catch (error) {
       console.error('Błąd przy zapisywaniu zmian:', error);
