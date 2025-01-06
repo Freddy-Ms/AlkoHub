@@ -7,7 +7,7 @@ const AddToHistory = () => {
   const [data, setData] = useState([]); // Store fetched products
   const [selectedAlcohol, setSelectedAlcohol] = useState(null); // Store selected alcohol details (name and ID)
   const [searchTerm, setSearchTerm] = useState(""); // Separate search term for dropdown
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(""); // Amount of alcohol in ml
   const [userId, setUserId] = useState(null); // Initialize as null until fetched from cookies
   const navigate = useNavigate();
 
@@ -62,33 +62,48 @@ const AddToHistory = () => {
     }
   };
 
-  const SearchableDropdown = ({ data }) => {
-    const [isOpen, setIsOpen] = useState(false);
+  const SearchableDropdown = ({ data, onAlcoholSelect, selectedAlcohol }) => {
+    const [searchTerm, setSearchTerm] = useState(""); // Name of selected alcohol
+    const [isOpen, setIsOpen] = useState(false); // Is the list open?
 
+    // Filter data based on the entered search term
     const filteredData = data.filter((item) =>
-      item.nazwa_alkoholu.toLowerCase().includes(searchTerm.toLowerCase())
+      item.nazwa_alkoholu.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     );
 
+    // Handle item click
     const handleItemClick = (item) => {
-      setSelectedAlcohol({ id: item.id, nazwa: item.nazwa_alkoholu }); // Store both ID and name
-      setSearchTerm(item.nazwa_alkoholu); // Update search term to show selected alcohol
-      setIsOpen(false);
+      onAlcoholSelect(item); // Set selected alcohol in main component
+      setSearchTerm(item.nazwa_alkoholu); // Set searchTerm to the selected alcohol name
+      setIsOpen(false); // Close the list after selecting an item
     };
 
     const handleFocus = () => setIsOpen(true);
     const handleBlur = () => setTimeout(() => setIsOpen(false), 200);
 
+    // Allow editing of selected alcohol
+    const handleChangeSearchTerm = (e) => {
+      const value = e.target.value;
+      setSearchTerm(value); 
+      // If value is empty, reset the selected alcohol
+      if (value === "") {
+        onAlcoholSelect(null);
+      } else if (!selectedAlcohol || selectedAlcohol.nazwa_alkoholu !== value) {
+        onAlcoholSelect(null); // Reset if user types a different name
+      }
+    };
+
     return (
       <div className="dropdown-container">
         <input
           type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={selectedAlcohol ? selectedAlcohol.nazwa_alkoholu : searchTerm}
+          onChange={handleChangeSearchTerm}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholder="Wyszukaj alkohol..."
+          placeholder={selectedAlcohol ? "" : "Wyszukaj alkohol..."} // Show placeholder only if no alcohol is selected
         />
-        {isOpen && (
+        {isOpen && !selectedAlcohol && (
           <div className="dropdown-list">
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
@@ -112,12 +127,11 @@ const AddToHistory = () => {
   return (
     <div className="login-container">
       <h1>Dodawanie alkoholu do historii</h1>
-      <SearchableDropdown data={data} />
-      {selectedAlcohol && (
-        <div className="selected-alcohol">
-          <strong>Wybrano alkohol:</strong> {selectedAlcohol.nazwa}
-        </div>
-      )}
+      <SearchableDropdown
+        data={data}
+        onAlcoholSelect={(alcohol) => setSelectedAlcohol(alcohol)} // Set selected alcohol
+        selectedAlcohol={selectedAlcohol}
+      />
       {selectedAlcohol && (
         <div className="amount-container">
           <label htmlFor="amount">Ilość (ml):</label>
@@ -127,7 +141,7 @@ const AddToHistory = () => {
             value={amount}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d*$/.test(value)) setAmount(value);
+              if (/^\d*$/.test(value)) setAmount(value); // Accept only digits
             }}
             placeholder="Wpisz ilość w ml"
           />
