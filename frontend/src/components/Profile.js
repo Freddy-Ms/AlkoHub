@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Profile.css";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";  // Importujemy useNavigate
 const role = Cookies.get('role');
+
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [completedAchievements, setCompletedAchievements] = useState([]);
   const [status, setStatus] = useState("");
   const [bac, setBac] = useState(null);
+  const navigate = useNavigate();  // Hook do nawigacji
+
   useEffect(() => {
     const userId = Cookies.get("user_id");
-    if (userId) {
-      // Fetch user data
-      fetchUserInfo(userId);
-      fetchCompletedAchievements(userId);
-      fetchUserHistory24h(userId);
+    if (!userId) {
+      navigate('/login'); // Przekierowanie na stronę logowania, jeśli brak user_id
+      return;
     }
-  }, []);
+    // Fetch user data
+    fetchUserInfo(userId);
+    fetchCompletedAchievements(userId);
+    fetchUserHistory24h(userId);
+  }, [navigate]); // Dodanie `navigate` do zależności
 
   const fetchUserInfo = async (userId) => {
     try {
@@ -113,8 +118,8 @@ const Profile = () => {
 
         <div className="Profile_section status">
           <h2>Stan</h2>
-          <p>Stan: {status}</p>
-          <p>Ilość promili: {bac !== null ? bac : "Brak danych"}</p>
+          <p>Stan: {status !== null ? status : "Trzeźwy"}</p>
+          <p>Ilość promili: {bac !== null ? bac : "0"}</p>
         </div>
       </div>
     </div>

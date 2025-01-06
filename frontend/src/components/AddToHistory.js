@@ -17,9 +17,9 @@ const AddToHistory = () => {
     if (storedUserId) {
       setUserId(parseInt(storedUserId, 10)); // Convert to integer
     } else {
-      alert("Brak zalogowanego użytkownika. Zaloguj się ponownie.");
+      navigate('/login'); // Redirect to login if user_id is missing
     }
-  }, []);
+  }, [navigate]);
 
   // Fetch products from backend
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';  // Importujemy bibliotekę Cookies
 import '../styles/Homepage.css';
 import '../styles/styles.css';
@@ -13,17 +13,19 @@ const Liked = () => {
   const [error, setError] = useState(null);  // Stan błędu (jeśli wystąpi)
   const [selectedCategories, setSelectedCategories] = useState([]);  // Stan dla zaznaczonych kategorii
   const [categories, setCategories] = useState([]); // State for fetched categories
+  const navigate = useNavigate(); // Hook do nawigacji
 
   useEffect(() => {
+    // Sprawdź, czy użytkownik jest zalogowany
+    const userId = Cookies.get('user_id');
+    if (!userId) {
+      navigate('/login'); // Przekierowanie na stronę logowania
+      return;
+    }
+
     // Fetch favorite products from backend
     const fetchProducts = async () => {
       try {
-        const userId = Cookies.get('user_id');
-        if (!userId) {
-          setError('User not found');
-          return;
-        }
-
         const query = selectedCategories.length
           ? `http://localhost:5000/ulubione/${userId}?categories=${selectedCategories.join(',')}`
           : `http://localhost:5000/ulubione/${userId}`;
@@ -43,7 +45,7 @@ const Liked = () => {
     };
 
     fetchProducts();
-  }, [selectedCategories]);
+  }, [selectedCategories, navigate]);
 
   useEffect(() => {
     // Fetch categories from backend

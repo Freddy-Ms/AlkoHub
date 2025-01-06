@@ -9,7 +9,7 @@ def calculate_bac(uzytkownik_id, historia_data):
     # Ustalenie współczynnika r w zależności od płci
     r = 0.68 if plec  else 0.55
     bac = 0
-
+    print("XD")
 
     # Zmienna do przechowywania łącznej ilości alkoholu
     total_alcohol_grams = 0
