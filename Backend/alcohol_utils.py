@@ -33,14 +33,15 @@ def calculate_bac(uzytkownik_id, historia_data):
 
     
     # Ustalenie stanu użytkownika na podstawie BAC
-    if BAC < 0.02:
+    if BAC < 0.2:
         stan = "Trzeźwy"
-    elif 0.02 <= BAC < 0.05:
+    elif 0.2 <= BAC < 0.5:
         stan = "Lekka nietrzeźwość"
-    elif 0.05 <= BAC < 0.08:
+    elif 0.5 <= BAC < 0.8:
         stan = "Średnia nietrzeźwość"
-    elif 0.08 <= BAC < 0.15:
+    elif 0.8 <= BAC < 1.5:
         stan = "Poważna nietrzeźwość"
     else:
         stan = "Stan ciężkiego upojenia"
     return round(BAC, 2), stan
+#63.12 / 54.4
