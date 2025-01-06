@@ -13,6 +13,7 @@ const NavbarLogged = () => {
       if (response.ok) {
         // Usuń ciasteczko user_id
         Cookies.remove('user_id');
+        Cookies.remove('role');
         alert('Wylogowano pomyślnie!');
         window.location.href = 'http://localhost:3000';
       } else {
