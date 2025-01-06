@@ -22,27 +22,27 @@ h1 {
 /* ----Like button---- */
 .like-button {
   position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%); /* Wyrównanie przycisku do środka karty w pionie */
+  top: 50;
+  right: 20px;
   padding: 8px 12px;
-  background-color: #ff8c00; /* Kolor przycisku */
-  color: white;
+  font-size: 30px;
+  background: none; /* Kolor przycisku */
+  color: rgb(0, 0, 0);
   border: none;
   cursor: pointer;
-  border-radius: 14px;
+  transition: color 0.3s ease; 
 }
 
 .like-button:hover {
-  background-color: #e67e00; /* Zmiana koloru przycisku po najechaniu */
+  background-color: none; /* Zmiana koloru przycisku po najechaniu */
 }
 
 .like-button.liked {
-  background-color: #28a745; /* Zielony kolor dla klikniętego przycisku */
+  background-color: none; /* Zielony kolor dla klikniętego przycisku */
 }
 
 .like-button.liked:hover {
-  background-color: #218838; /* Ciemniejszy zielony kolor na hover */
+  background-color: none; /* Ciemniejszy zielony kolor na hover */
 }
 
 /* ----Load more---- */
