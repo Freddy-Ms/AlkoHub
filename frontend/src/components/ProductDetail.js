@@ -330,12 +330,6 @@ const ProductDetail = () => {
         ) : (
           <p>Brak opinii.</p>
         )}
-        <h3>Średnia ocena: {srednia_ocena || 'Brak ocen'}</h3>
-        {isLoggedIn && !isEditing && (
-          <button onClick={() => setIsEditing(true)} className="add-opinion-button">
-            Dodaj opinię
-          </button>
-        )}
       </div>
     </div>
   );  

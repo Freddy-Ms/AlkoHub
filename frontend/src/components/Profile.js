@@ -83,16 +83,11 @@ const Profile = () => {
               <p>Płeć: {userInfo.plec}</p>
               <p>Email: {userInfo.mail}</p>
               <p>Ranga: {userInfo.ranga}</p>
-              {role === 'Administrator' && (
-                <Link to="/adminPage">
-                  <button className="Profile_primary-button">Panel administratora</button>
-                </Link>
-              )}
-              {role === 'Degustator' && (
-                <Link to="/testerPage">
-                  <button className="Profile_primary-button">Panel degustatora</button>
-                </Link>
-              )}
+
+              {/* Przycisk Edytuj profil dostępny dla wszystkich */}
+              <Link to="/editProfile">
+                <button className="Profile_primary-button">Edytuj profil</button>
+              </Link>
             </>
           )}
         </div>
