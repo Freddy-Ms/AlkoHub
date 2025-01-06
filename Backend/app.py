@@ -266,9 +266,6 @@ def delete_opinion(user_id, alkohol_id):
     # Znajdź opinię użytkownika dla danego alkoholu
     opinion = Opinia.query.filter_by(id_uzytkownika=user_id, id_alkoholu=alkohol_id).first()
 
-    if opinion is None:
-        # Jeśli opinia nie istnieje, zwróć błąd
-        abort(404, description="Opinion not found")
 
     # Usuń opinię z bazy danych
     db.session.delete(opinion)
@@ -277,7 +274,13 @@ def delete_opinion(user_id, alkohol_id):
     # Zwróć odpowiedź, że opinia została usunięta
     return jsonify({"message": "Opinion deleted successfully"}), 200
 
-
+@app.route('/get_all_opinions/<int:user_id>', methods=['GET'])
+def get_all_opinions(user_id):
+    try:
+        result, status_code = Opinia.get_all_opinions_for_user(user_id)
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"message": f"Błąd: {str(e)}"}), 500
 
 
 

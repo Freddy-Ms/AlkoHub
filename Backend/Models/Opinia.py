@@ -1,6 +1,7 @@
 from . import db
 from sqlalchemy import CheckConstraint
 from datetime import datetime
+
 class Opinia(db.Model):
     __tablename__ = 'opinie'
 
@@ -97,3 +98,30 @@ class Opinia(db.Model):
 
         except Exception as e:
             return {"message": f"Błąd serwera: {str(e)}"}, 500
+        
+    @staticmethod
+    def get_all_opinions_for_user(user_id):
+        try:
+            from .Alkohol import Alkohol
+            opinions = db.session.query(Opinia, Alkohol).join(Alkohol).filter(
+                Opinia.id_uzytkownika == user_id
+            ).all()
+            
+            if not opinions:
+                return {"message": "Brak opinii dla tego użytkownika."}, 404
+
+            result = [
+                {
+                    'image_url': alkohol.image_url,
+                    'nazwa_alkoholu': alkohol.nazwa_alkoholu,
+                    'ocena': opinia.ocena,
+                    'recenzja': opinia.recenzja,
+                    'znacznik_czasu': opinia.znacznik_czasu,
+                    'id_alkoholu': opinia.id_alkoholu
+                }
+                for opinia, alkohol in opinions
+            ]
+            return result, 200
+
+        except Exception as e:
+            return {"message": f"Błąd podczas pobierania opinii: {str(e)}"}, 500
