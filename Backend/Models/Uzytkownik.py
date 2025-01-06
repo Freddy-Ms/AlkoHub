@@ -220,4 +220,41 @@ class Uzytkownik(db.Model):
         except Exception as e:
             db.session.rollback()  # Wycofanie transakcji w razie błędu
             return {"message": f"Błąd podczas aktualizacji danych użytkownika: {str(e)}"}, 500
+        
+    @staticmethod
+    def get_all_users():
+        # Pobierz rangi "Smakosz" i "Degustator"
+        rangas = RangaUzytkownika.query.filter(RangaUzytkownika.nazwa.in_(['Smakosz', 'Degustator'])).all()
+        rang_ids = [ranga.id for ranga in rangas]
+
+        # Pobierz użytkowników, którzy mają jedną z tych rang
+        uzytkownicy = Uzytkownik.query.filter(Uzytkownik.ranga.in_(rang_ids)).all()
+
+        # Przygotuj dane w formacie JSON
+        result = []
+        for uzytkownik in uzytkownicy:
+            result.append({
+                'id': uzytkownik.id,
+                'nazwa': uzytkownik.nazwa,
+                'ranga': uzytkownik.ranga_rel.nazwa  # Nazwa rangi pochodzi z relacji
+            })
+        
+        return result
+    
+    @staticmethod
+    def edit_role(user_id, role_id):
+        # Znajdź użytkownika po ID
+        user = Uzytkownik.query.get(user_id)
+        if not user:
+            return False  # Użytkownik nie istnieje
+
+        # Znajdź rolę po ID
+        new_role = RangaUzytkownika.query.get(role_id)
+        if not new_role:
+            return False  # Rola nie istnieje
+
+        # Zaktualizuj rolę użytkownika
+        user.ranga = new_role.id
+        db.session.commit()  # Zatwierdzenie zmian w bazie danych
+        return True  # Zwróć True, gdy wszystko poszło pomyślnie
 

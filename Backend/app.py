@@ -193,6 +193,24 @@ def update_opinion(user_id, alkohol_id):
 
     except Exception as e:
         return jsonify({"message": f"Błąd serwera: {str(e)}"}), 500
+    
+@app.route('/get_all_users', methods=['GET'])
+def get_all_users():
+    # Wywołanie statycznej metody w klasie Uzytkownik
+    uzytkownicy = Uzytkownik.get_all_users()
+    
+    return jsonify(uzytkownicy)
+
+
+@app.route('/edit_role/<int:user_id>/<int:role_id>', methods=['PUT'])
+def edit_role(user_id, role_id):
+    # Wywołanie statycznej metody do edytowania roli
+    success = Uzytkownik.edit_role(user_id, role_id)
+
+    if success:
+        return jsonify({'message': 'Rola użytkownika została pomyślnie zaktualizowana'}), 200
+    else:
+        return jsonify({'message': 'Użytkownik lub rola nie istnieje'}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
