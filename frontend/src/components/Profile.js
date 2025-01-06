@@ -14,13 +14,15 @@ const Profile = () => {
     waga: userInfo?.waga,
     wiek: userInfo?.wiek,
   });
-
-  const [isRoleModalVisible, setIsRoleModalVisible] = useState(false); // Stan kontrolujący wyświetlanie okienka do edycji ról
-  const [searchQuery, setSearchQuery] = useState(""); // Zapytanie do wyszukiwania
-  const [usersList, setUsersList] = useState([]); // Lista użytkowników
-  const [selectedUser, setSelectedUser] = useState(null); // Wybrany użytkownik
-  const [role, setRole] = useState(Cookies.get("role"));
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState(""); // Stan do trzymania zapytania wyszukiwania
+  const [filteredUsers, setFilteredUsers] = useState(users); // Przechowuje przefiltrowanych użytkowników
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const userId = Cookies.get("user_id");
@@ -31,6 +33,8 @@ const Profile = () => {
     fetchUserInfo(userId);
     fetchCompletedAchievements(userId);
     fetchUserHistory24h(userId);
+    fetchUsers();
+    fetchRoles();
   }, [navigate]); // Dodanie `navigate` do zależności
 
   const fetchUserInfo = async (userId) => {
@@ -80,45 +84,27 @@ const Profile = () => {
     }
   };
 
-  // Funkcja do wyszukiwania użytkowników
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  // Funkcja do wyszukiwania użytkowników po nazwie
-  const handleSearchSubmit = async () => {
+  const fetchUsers = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/searchUsers?query=${searchQuery}`
-      );
+      const response = await fetch("http://localhost:5000/get_all_users");
       const data = await response.json();
-      if (data.users) {
-        setUsersList(data.users);
+      if (data.length > 0) {
+        setUsers(data);
       }
     } catch (error) {
-      console.error("Error searching for users:", error);
+      console.error("Error fetching users:", error);
     }
   };
 
-  // Funkcja do przypisania roli użytkownikowi
-  const handleAssignRole = async (userId, newRole) => {
+  const fetchRoles = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/assignRole/${userId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ role: newRole }),
-        }
-      );
+      const response = await fetch("http://localhost:5000/roles");
       const data = await response.json();
-      if (data.success) {
-        alert(`Rola dla użytkownika ${userId} została zaktualizowana.`);
+      if (data.length > 0) {
+        setRoles(data);
       }
     } catch (error) {
-      console.error("Error assigning role:", error);
+      console.error("Error fetching roles:", error);
     }
   };
 
@@ -163,6 +149,60 @@ const Profile = () => {
       waga: userInfo?.waga,
       wiek: userInfo?.wiek,
     }); // Przywrócenie początkowych danych
+  };
+
+  const handleRoleModalToggle = () => {
+    setIsRoleModalOpen(!isRoleModalOpen);
+  };
+
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    setSelectedRole(user.role); // Załadowanie aktualnej roli użytkownika
+    setIsDropdownOpen(false);
+  };
+
+  const handleRoleChange = async () => {
+    if (!selectedUser || !selectedRole) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/edit_role/${selectedUser.id}/${selectedRole}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (
+        data.message === "Rola użytkownika została pomyślnie zaktualizowana"
+      ) {
+        alert("Rola została zaktualizowana!");
+        handleRoleModalToggle(); // Zamknięcie okna po zapisaniu zmian
+      } else {
+        alert("Wystąpił problem podczas zmiany roli.");
+      }
+    } catch (error) {
+      console.error("Error updating user role:", error);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    // Filtrowanie użytkowników na podstawie zapytania
+    const filtered = users.filter((user) =>
+      user.nazwa.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+
+    if (query.length > 0) {
+      setIsDropdownOpen(true);
+    } else {
+      setIsDropdownOpen(false);
+    }
   };
 
   if (!userInfo) {
@@ -255,51 +295,71 @@ const Profile = () => {
           <p>Ilość promili: {bac !== null ? bac : "0"}</p>
         </div>
       </div>
+
       {/* Przycisk Edytuj profil poniżej wszystkich sekcji */}
       <div className="Profile_button-container">
         <button className="Profile_primary-button" onClick={handleEditClick}>
           Edytuj profil
         </button>
-        {/* Przycisk dla administratora */}
         {role === "Administrator" && (
           <button
             className="Profile_primary-button"
-            onClick={() => setIsRoleModalVisible(!isRoleModalVisible)} // Zmieniamy stan widoczności okna
+            onClick={handleRoleModalToggle}
           >
             Rangi użytkowników
           </button>
         )}
       </div>
       {/* Okienko do edycji ról */}
-      {isRoleModalVisible && role === "Administrator" && (
+      {isRoleModalOpen && (
         <div className="RoleModal">
-          <h3>Wyszukaj użytkownika</h3>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Wyszukaj użytkownika po nazwie"
-          />
-          <button onClick={handleSearchSubmit}>Szukaj</button>
-
-          {usersList.length > 0 && (
-            <div className="UserList">
-              <ul>
-                {usersList.map((user) => (
-                  <li key={user.id}>
-                    {user.nazwa} - 
-                    <select
-                      onChange={(e) => handleAssignRole(user.id, e.target.value)}
-                      defaultValue={user.ranga}
-                    >
-                      <option value="user">Użytkownik</option>
-                      <option value="admin">Administrator</option>
-                    </select>
-                  </li>
-                ))}
+          <div className="UserList">
+            <h3>Wybierz użytkownika do zmiany roli:</h3>
+            <input
+              type="text"
+              placeholder="Wpisz nazwę użytkownika"
+              value={searchQuery}
+              onChange={handleSearchChange} // Wywołanie funkcji filtrowania
+              onClick={() => setIsDropdownOpen(true)}
+            />
+            {isDropdownOpen && (
+              <ul className="dropdown-list">
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <li key={user.id} onClick={() => handleUserSelect(user)}>
+                      {user.nazwa} ({user.ranga})
+                    </li>
+                  ))
+                ) : (
+                  <li>Brak pasujących użytkowników</li>
+                )}
               </ul>
-            </div>
-          )}
+            )}
+          </div>
+
+          {selectedUser && (
+          <div className="RoleChange">
+            <h4>Wybierz rolę dla: {selectedUser.nazwa}</h4>
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              {roles.length > 0 ? (
+                roles.map((role) => (
+                  <option key={role.id} value={role.ranga}>
+                    {role.ranga}
+                  </option>
+                ))
+              ) : (
+                <option disabled>Brak dostępnych ról</option>
+              )}
+            </select>
+            <button onClick={handleRoleChange}>Zmień rolę</button>
+          </div>
+        )}
+
+
+          <button onClick={handleRoleModalToggle}>Zamknij</button>
         </div>
       )}
     </div>

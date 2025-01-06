@@ -240,6 +240,7 @@ class Uzytkownik(db.Model):
             })
         
         return result
+
     
     @staticmethod
     def edit_role(user_id, role_id):

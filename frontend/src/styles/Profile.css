@@ -213,28 +213,89 @@ margin-right: 10px; /* Odstęp między przyciskami */
 }  
 
 .RoleModal {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    z-index: 10;
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  border-radius: 8px;
 }
-  
+
 .UserList {
-    margin-top: 20px;
+  margin-top: 20px;
 }
-  
+
 .UserList ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
-  
+
 .UserList li {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    cursor: pointer;
+    width: 80%;
+    padding: 8px;
+    margin: 5px auto; /* Wyśrodkowanie elementów */
+    background-color: #e3e3e3;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
+
+.UserList li:hover {
+  background-color: #e0e0e0;
+}
+
+.RoleChange {
+  margin-top: 20px;
+}
+
+.RoleChange select {
+  padding: 8px;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.RoleChange button {
+  padding: 8px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.RoleChange button:hover {
+  background-color: #45a049;
+}
+
+.RoleModal .UserList {
+    position: relative;
+  }
+  
+  .RoleModal .dropdown-list {
+    position: absolute;
+    top: 100%; /* Ustala pozycję dropdown pod inputem */
+    left: 0;
+    width: 100%; /* Dopasowuje szerokość do inputa */
+    background-color: white;
+    border: 1px solid #bfbebe;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000; /* Zapewnia, że lista będzie na wierzchu */
+  }
+  
+  .RoleModal .dropdown-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .RoleModal .dropdown-list li:hover {
+    background-color: #f0f0f0;
+  }
