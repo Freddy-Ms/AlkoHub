@@ -95,7 +95,7 @@ def get_user_history_24h(uzytkownik_id):
     result = Uzytkownik.get_user_history_24h(uzytkownik_id)
     return jsonify(result)
 
-@app.route('/delete_fromn_history/<int:user_id>/<int:alkohol_id>', methods=['DELETE'])
+@app.route('/delete_from_history/<int:user_id>/<int:alkohol_id>', methods=['DELETE'])
 def delete_history_entry(user_id, alkohol_id):
     data = request.args.get('data')  # Pobranie daty z parametrów zapytania
     response, status_code = Uzytkownik.delete_history_entry(user_id, alkohol_id, data)

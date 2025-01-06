@@ -100,7 +100,7 @@ const History = () => {
       const userId = Cookies.get('user_id'); // Pobranie user_id z ciasteczek
 
       const response = await fetch(
-        `http://localhost:5000/delete_fromn_history/${userId}/${productId}?data=${encodeURIComponent(date)}`,
+        `http://localhost:5000/delete_from_history/${userId}/${productId}?data=${encodeURIComponent(date)}`,
         { method: 'DELETE' }
       );
 
