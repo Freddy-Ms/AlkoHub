@@ -15,7 +15,7 @@ input {
   padding: 10px;
   font-size: 16px;
   margin: 5px 0; /* Odstęp wokół inputów */
-  border-radius: 10px; /* Zaokrąglone rogi dla inputów */
+  border-radius: 14px; /* Zaokrąglone rogi dla inputów */
   border: 1px solid #ccc; /* Obramowanie dla inputów */
 }
 

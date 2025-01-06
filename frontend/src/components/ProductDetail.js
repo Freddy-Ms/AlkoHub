@@ -68,15 +68,26 @@ const ProductDetail = () => {
 
   const { alkohol, opinie, srednia_ocena } = productData;
 
+  // Funkcja konwertująca ocenę na gwiazdki
+  const renderRatingStars = (rating) => {
+    const fullStars = "⭐".repeat(rating); // Tworzymy pełne gwiazdki
+    const emptyStars = "☆".repeat(5 - rating); // Tworzymy puste gwiazdki
+    return fullStars + emptyStars; // Łączymy pełne i puste gwiazdki
+  };
+
   return (
     <div className="container">
       {/* Górna część - informacje o produkcie */}
       <div className="product-details">
         <div className="product-details-content">
           <img src={alkohol.image_url} alt={alkohol.nazwa} className="product-image" />
+          
           <div className="product-info">
             <h2>{alkohol.nazwa}</h2>
             <div className="product-attributes">
+              <h3 className="average-rating">
+              Średnia ocena: {srednia_ocena} {renderRatingStars(srednia_ocena) || 'Brak ocen'}
+              </h3>
               <p><strong>Rodzaj:</strong> {alkohol.rodzaj}</p>
               <p><strong>Zawartość procentowa:</strong> {alkohol.zawartosc_procentowa}%</p>
               <p><strong>Rok produkcji:</strong> {alkohol.rok_produkcji}</p>
@@ -100,9 +111,8 @@ const ProductDetail = () => {
           <ul>
             {opinie.map((opinia, index) => (
               <li key={index} className="opinion-item">
-                <p><strong>Data:</strong> {opinia.znacznik_czasu}</p>
-                <p><strong>Użytkownik:</strong> {opinia.uzytkownik}</p>
-                <p><strong>Ocena:</strong> {opinia.ocena}</p>
+                <p><strong> {opinia.uzytkownik}</strong> {opinia.znacznik_czasu}</p>              
+                <p><strong>Ocena:</strong> {renderRatingStars(opinia.ocena)}</p>
                 <p><strong>Recenzja:</strong> {opinia.recenzja || 'Brak recenzji'}</p>
               </li>
             ))}
@@ -110,7 +120,6 @@ const ProductDetail = () => {
         ) : (
           <p>Brak opinii.</p>
         )}
-        <h3>Średnia ocena: {srednia_ocena || 'Brak ocen'}</h3>
       </div>
     </div>
   );

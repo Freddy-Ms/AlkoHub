@@ -1,9 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/Navbar.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "../styles/Navbar.css";
 
 const Navbar = () => {
-
   return (
     <nav className="navbar">
       <div className="auth-buttons">
@@ -13,9 +12,9 @@ const Navbar = () => {
           <button className="primary-button">❤️</button>
         </Link>
       </div>
-      
-      <Link to="/">
-        <span className="navbar-text">AlkoHub</span>
+
+      <Link to="/" className="no-underline">
+        <h1 className="navbar-text">AlkoHub</h1>
       </Link>
 
       <Link to="/login">
