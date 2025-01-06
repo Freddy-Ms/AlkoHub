@@ -1,7 +1,7 @@
 # w app.py
 from flask_cors import CORS
 from flask import Flask, request, jsonify, session
-from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu
+from Models import db, Alkohol, Uzytkownik, Historia, Osiagniecie, Ulubione, RodzajAlkoholu, Opinia
 from datetime import datetime
 
 app = Flask(__name__)
@@ -147,6 +147,52 @@ def update_user_info(user_id):
     data = request.get_json()
     response, status_code = Uzytkownik.update_user_info(user_id, data)
     return jsonify(response), status_code
+
+@app.route('/add_opinion', methods=['POST'])
+def add_opinion():
+    data = request.get_json()
+    try:
+        response, status_code = Opinia.add_opinion(data)
+        return jsonify(response), status_code
+    except Exception as e:
+        return jsonify({"message": f"Błąd serwera: {str(e)}"}), 500
+    
+
+@app.route('/check_user_opinion/<int:user_id>/<int:alkohol_id>', methods=['GET'])
+def check_user_opinion(user_id, alkohol_id):
+    if not user_id or not alkohol_id:
+        return jsonify({'message': 'Brak identyfikatora użytkownika lub produktu'}), 400
+
+    try:
+        result = Opinia.check_user_opinion(user_id, alkohol_id)
+
+        # Zwrócenie odpowiedzi
+        if 'exists' in result:
+            return jsonify(result)
+        else:
+            return jsonify({'message': result['message']}), 500
+
+    except Exception as e:
+        return jsonify({"message": f"Błąd serwera: {str(e)}"}), 500
+    
+@app.route('/update_opinion/<int:user_id>/<int:alkohol_id>', methods=['PUT'])
+def update_opinion(user_id, alkohol_id):
+    # Pobieranie danych z requesta
+    data = request.get_json()
+    ocena = data.get('ocena')
+    recenzja = data.get('recenzja')
+
+    if ocena is None or not recenzja:
+        return jsonify({'message': 'Brak danych do zaktualizowania opinii'}), 400
+
+    try:
+        # Wywołanie metody statycznej update_opinion z modelu Opinia
+        response, status_code = Opinia.update_opinion(user_id, alkohol_id, ocena, recenzja)
+
+        return jsonify(response), status_code
+
+    except Exception as e:
+        return jsonify({"message": f"Błąd serwera: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
