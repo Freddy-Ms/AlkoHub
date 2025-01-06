@@ -194,6 +194,30 @@ class Uzytkownik(db.Model):
             db.session.add(new_entry)
             db.session.commit()
             return {"message": "Wpis został dodany."}, 201
-
         except Exception as e:
             return {"message": f"Błąd: {str(e)}"}, 500
+        
+    @staticmethod
+    def update_user_info(user_id, data):
+        try:
+            
+            # Wyszukiwanie użytkownika w bazie danych
+            user = Uzytkownik.query.get(user_id)
+            print(user.wiek, user.waga)
+            if not user:
+                return {"message": "Użytkownik nie istnieje."}, 404
+            # Aktualizacja pól użytkownika (tylko jeśli dane są dostarczone)
+            if 'waga' in data:
+                user.waga = float(data['waga'])
+            if 'wiek' in data:
+                user.wiek = int(data['wiek'])
+            
+
+            # Zatwierdzenie zmian w bazie danych
+            db.session.commit()
+            return {"message": "Dane użytkownika zaktualizowane pomyślnie.", "success": True}, 200
+
+        except Exception as e:
+            db.session.rollback()  # Wycofanie transakcji w razie błędu
+            return {"message": f"Błąd podczas aktualizacji danych użytkownika: {str(e)}"}, 500
+

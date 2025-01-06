@@ -91,7 +91,7 @@ const Profile = () => {
     const userId = Cookies.get("user_id");
     try {
       const response = await fetch(
-        `http://localhost:5000/updateUserInfo/${userId}`,
+        `http://localhost:5000/update_user_info/${userId}`,
         {
           method: "PUT",
           headers: {

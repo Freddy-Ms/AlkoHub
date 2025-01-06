@@ -141,6 +141,12 @@ def is_favorite(uzytkownik_id, alkohol_id):
         return jsonify({"is_favorite": result}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/update_user_info/<int:user_id>', methods=['PUT'])
+def update_user_info(user_id):
+    data = request.get_json()
+    response, status_code = Uzytkownik.update_user_info(user_id, data)
+    return jsonify(response), status_code
 
 if __name__ == "__main__":
     app.run(debug=True)
