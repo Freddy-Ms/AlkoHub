@@ -180,6 +180,7 @@ const Profile = () => {
       ) {
         alert("Rola została zaktualizowana!");
         handleRoleModalToggle(); // Zamknięcie okna po zapisaniu zmian
+        window.location.reload();
       } else {
         alert("Wystąpił problem podczas zmiany roli.");
       }
@@ -313,6 +314,9 @@ const Profile = () => {
       {/* Okienko do edycji ról */}
       {isRoleModalOpen && (
         <div className="RoleModal">
+          <div className="RoleModalHeader">
+            <button className="closeButton" onClick={handleRoleModalToggle}>Zamknij</button>
+          </div>
           <div className="UserList">
             <h3>Wybierz użytkownika do zmiany roli:</h3>
             <input
@@ -346,7 +350,7 @@ const Profile = () => {
             >
               {roles.length > 0 ? (
                 roles.map((role) => (
-                  <option key={role.id} value={role.ranga}>
+                  <option key={role.id} value={role.id}>
                     {role.ranga}
                   </option>
                 ))
@@ -354,12 +358,11 @@ const Profile = () => {
                 <option disabled>Brak dostępnych ról</option>
               )}
             </select>
-            <button onClick={handleRoleChange}>Zmień rolę</button>
           </div>
-        )}
-
-
-          <button onClick={handleRoleModalToggle}>Zamknij</button>
+          )}
+          <div className="RolecChangeButton">
+            <button className="Profile_primary-button" onClick={handleRoleChange}>Zmień rolę</button>
+          </div>
         </div>
       )}
     </div>
