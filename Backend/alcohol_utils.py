@@ -8,44 +8,40 @@ def calculate_bac(uzytkownik_id, historia_data):
 
     # Ustalenie współczynnika r w zależności od płci
     r = 0.68 if plec  else 0.55
-    bac = 0
-    print("XD")
-
-    # Zmienna do przechowywania łącznej ilości alkoholu
-    total_alcohol_grams = 0
+    alcohol_grams_per_ml = 0.789
+    metabolism = 0.015
     current_time = datetime.now()
+    total_alcohol_grams = 0
     
     # Iterowanie przez historię picia alkoholu
     for record in historia_data:
-        zawartosc_procentowa = record['zawartosc_procentowa']
+        zawartosc_procentowa = record['zawartosc_procentowa'] / 100
         ilosc_wypitego_ml = record['ilosc_wypitego_ml']
         czas_picia = datetime.strptime(record['data'], "%Y-%m-%d %H:%M:%S")  # Czas spożycia alkoholu
-
-        # Przekształcamy ml na gramy alkoholu (0.8 to g/ml dla alkoholu)
-        alcohol_grams = (ilosc_wypitego_ml * zawartosc_procentowa /100 * 0.8)
-        total_alcohol_grams += alcohol_grams
-
-    # Obliczanie BAC w oparciu o całkowitą ilość alkoholu
-    bac = total_alcohol_grams / (waga * 1000 * r)  # BAC w promilach
+        hours_since_drinking = (current_time - czas_picia).total_seconds() / 3600
+        # Przekształcamy ml na gramy alkoholu 
+        alcohol_grams = ilosc_wypitego_ml * alcohol_grams_per_ml * zawartosc_procentowa
+        # Uwzględnienie metabolizmu
+        alcohol_grams -= max(0, hours_since_drinking * metabolism * waga * r)
+        # Sumowanie alkoholu pozostałego w organizmie
+        total_alcohol_grams += max(0, alcohol_grams)
     
-    # Spadek BAC na podstawie czasu, który minął od spożycia
-    time_diff = current_time - datetime.strptime(historia_data[-1]['data'], "%Y-%m-%d %H:%M:%S")
-    print(time_diff)
-    hours_since_drinking = time_diff.total_seconds() / 3600  # Czas w godzinach
-    bac -= 0.015 * hours_since_drinking  # Spadek BAC o 0.015 na godzinę
+    BAC = total_alcohol_grams / (r * waga)
+
+    print(BAC)
+        
+
     
-    if bac < 0:
-        bac = 0
     # Ustalenie stanu użytkownika na podstawie BAC
-    if bac < 0.02:
+    if BAC < 0.2:
         stan = "Trzeźwy"
-    elif 0.02 <= bac < 0.05:
+    elif 0.2 <= BAC < 0.5:
         stan = "Lekka nietrzeźwość"
-    elif 0.05 <= bac < 0.08:
+    elif 0.5 <= BAC < 0.8:
         stan = "Średnia nietrzeźwość"
-    elif 0.08 <= bac < 0.15:
+    elif 0.8 <= BAC < 1.5:
         stan = "Poważna nietrzeźwość"
     else:
         stan = "Stan ciężkiego upojenia"
-    print(bac,stan)
-    return round(bac, 2), stan
+    return round(BAC, 2), stan
+#63.12 / 54.4
