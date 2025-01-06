@@ -15,6 +15,11 @@ const Profile = () => {
     wiek: userInfo?.wiek,
   });
 
+  const [isRoleModalVisible, setIsRoleModalVisible] = useState(false); // Stan kontrolujący wyświetlanie okienka do edycji ról
+  const [searchQuery, setSearchQuery] = useState(""); // Zapytanie do wyszukiwania
+  const [usersList, setUsersList] = useState([]); // Lista użytkowników
+  const [selectedUser, setSelectedUser] = useState(null); // Wybrany użytkownik
+  const [role, setRole] = useState(Cookies.get("role"));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,6 +77,48 @@ const Profile = () => {
       }
     } catch (error) {
       console.error("Error fetching user history:", error);
+    }
+  };
+
+  // Funkcja do wyszukiwania użytkowników
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Funkcja do wyszukiwania użytkowników po nazwie
+  const handleSearchSubmit = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/searchUsers?query=${searchQuery}`
+      );
+      const data = await response.json();
+      if (data.users) {
+        setUsersList(data.users);
+      }
+    } catch (error) {
+      console.error("Error searching for users:", error);
+    }
+  };
+
+  // Funkcja do przypisania roli użytkownikowi
+  const handleAssignRole = async (userId, newRole) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/assignRole/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ role: newRole }),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        alert(`Rola dla użytkownika ${userId} została zaktualizowana.`);
+      }
+    } catch (error) {
+      console.error("Error assigning role:", error);
     }
   };
 
@@ -137,8 +184,8 @@ const Profile = () => {
               <p>Płeć: {userInfo.plec}</p>
               <p>Email: {userInfo.mail}</p>
               <p>Ranga: {userInfo.ranga}</p>
-              <div>
-                <label>Waga:</label>
+              <p>
+                Waga:{" "}
                 {isEditing ? (
                   <input
                     type="number"
@@ -147,11 +194,11 @@ const Profile = () => {
                     onChange={handleChange}
                   />
                 ) : (
-                  <span>{userInfo.waga}</span>
+                  userInfo.waga
                 )}
-              </div>
-              <div>
-                <label>Wiek:</label>
+              </p>
+              <p>
+                Wiek:{" "}
                 {isEditing ? (
                   <input
                     type="number"
@@ -160,13 +207,23 @@ const Profile = () => {
                     onChange={handleChange}
                   />
                 ) : (
-                  <span>{userInfo.wiek}</span>
+                  userInfo.wiek
                 )}
-              </div>
+              </p>
               {isEditing && (
                 <>
-                  <button onClick={handleSaveClick}>Zapisz zmiany</button>
-                  <button onClick={handleCancelClick}>Anuluj</button>
+                  <button
+                    className="Profile_save-button"
+                    onClick={handleSaveClick}
+                  >
+                    Zapisz zmiany
+                  </button>
+                  <button
+                    className="Profile_primary-button"
+                    onClick={handleCancelClick}
+                  >
+                    Anuluj
+                  </button>
                 </>
               )}
             </>
@@ -203,7 +260,48 @@ const Profile = () => {
         <button className="Profile_primary-button" onClick={handleEditClick}>
           Edytuj profil
         </button>
+        {/* Przycisk dla administratora */}
+        {role === "Administrator" && (
+          <button
+            className="Profile_primary-button"
+            onClick={() => setIsRoleModalVisible(!isRoleModalVisible)} // Zmieniamy stan widoczności okna
+          >
+            Rangi użytkowników
+          </button>
+        )}
       </div>
+      {/* Okienko do edycji ról */}
+      {isRoleModalVisible && role === "Administrator" && (
+        <div className="RoleModal">
+          <h3>Wyszukaj użytkownika</h3>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Wyszukaj użytkownika po nazwie"
+          />
+          <button onClick={handleSearchSubmit}>Szukaj</button>
+
+          {usersList.length > 0 && (
+            <div className="UserList">
+              <ul>
+                {usersList.map((user) => (
+                  <li key={user.id}>
+                    {user.nazwa} - 
+                    <select
+                      onChange={(e) => handleAssignRole(user.id, e.target.value)}
+                      defaultValue={user.ranga}
+                    >
+                      <option value="user">Użytkownik</option>
+                      <option value="admin">Administrator</option>
+                    </select>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
