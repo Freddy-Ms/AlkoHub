@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Profile.css";
 import Cookies from "js-cookie";
-import { Link, useNavigate } from "react-router-dom";  // Importujemy useNavigate
-const role = Cookies.get('role');
+import { Link, useNavigate } from "react-router-dom"; // Importujemy useNavigate
+const role = Cookies.get("role");
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [completedAchievements, setCompletedAchievements] = useState([]);
   const [status, setStatus] = useState("");
   const [bac, setBac] = useState(null);
-  const navigate = useNavigate();  // Hook do nawigacji
+  const [isEditing, setIsEditing] = useState(false); // Stan edycji
+  const [editedUserInfo, setEditedUserInfo] = useState({
+    waga: userInfo?.waga,
+    wiek: userInfo?.wiek,
+  });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = Cookies.get("user_id");
     if (!userId) {
-      navigate('/login'); // Przekierowanie na stronę logowania, jeśli brak user_id
+      navigate("/login"); // Przekierowanie na stronę logowania, jeśli brak user_id
       return;
     }
-    // Fetch user data
     fetchUserInfo(userId);
     fetchCompletedAchievements(userId);
     fetchUserHistory24h(userId);
@@ -31,6 +36,10 @@ const Profile = () => {
       const data = await response.json();
       if (data.user_info) {
         setUserInfo(data.user_info);
+        setEditedUserInfo({
+          waga: data.user_info.waga,
+          wiek: data.user_info.wiek,
+        });
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -66,6 +75,53 @@ const Profile = () => {
     }
   };
 
+  const handleEditClick = () => {
+    setIsEditing(true); // Włącza tryb edycji
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setEditedUserInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveClick = async () => {
+    const userId = Cookies.get("user_id");
+    try {
+      const response = await fetch(
+        `http://localhost:5000/updateUserInfo/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editedUserInfo),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setIsEditing(false); // Wyłącza tryb edycji
+        fetchUserInfo(userId); // Pobiera zaktualizowane dane
+      }
+    } catch (error) {
+      console.error("Error saving user info:", error);
+    }
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false); // Anulowanie edycji
+    setEditedUserInfo({
+      waga: userInfo?.waga,
+      wiek: userInfo?.wiek,
+    }); // Przywrócenie początkowych danych
+  };
+
+  if (!userInfo) {
+    return <div>Loading...</div>; // Wyświetlanie komunikatu "Ładowanie" gdy dane są pobierane
+  }
+
   return (
     <div className="Profile_container">
       <div className="Profile_header">
@@ -78,16 +134,41 @@ const Profile = () => {
           {userInfo && (
             <>
               <p>Nazwa użytkownika: {userInfo.nazwa}</p>
-              <p>Waga: {userInfo.waga}</p>
-              <p>Wiek: {userInfo.wiek}</p>
               <p>Płeć: {userInfo.plec}</p>
               <p>Email: {userInfo.mail}</p>
               <p>Ranga: {userInfo.ranga}</p>
-
-              {/* Przycisk Edytuj profil dostępny dla wszystkich */}
-              <Link to="/editProfile">
-                <button className="Profile_primary-button">Edytuj profil</button>
-              </Link>
+              <div>
+                <label>Waga:</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    name="waga"
+                    value={editedUserInfo.waga}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <span>{userInfo.waga}</span>
+                )}
+              </div>
+              <div>
+                <label>Wiek:</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    name="wiek"
+                    value={editedUserInfo.wiek}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <span>{userInfo.wiek}</span>
+                )}
+              </div>
+              {isEditing && (
+                <>
+                  <button onClick={handleSaveClick}>Zapisz zmiany</button>
+                  <button onClick={handleCancelClick}>Anuluj</button>
+                </>
+              )}
             </>
           )}
         </div>
@@ -116,6 +197,12 @@ const Profile = () => {
           <p>Stan: {status !== null ? status : "Trzeźwy"}</p>
           <p>Ilość promili: {bac !== null ? bac : "0"}</p>
         </div>
+      </div>
+      {/* Przycisk Edytuj profil poniżej wszystkich sekcji */}
+      <div className="Profile_button-container">
+        <button className="Profile_primary-button" onClick={handleEditClick}>
+          Edytuj profil
+        </button>
       </div>
     </div>
   );

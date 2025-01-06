@@ -34,6 +34,66 @@
     height: 400px;
 }
 
+/* Kontener przycisków edycji */
+.Profile_section .Profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Ogólne stylowanie dla formularza i sekcji */
+.Profile_section .Profile-header h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Stylizacja dla sekcji, w której edytujemy dane */
+.Profile_section .Profile-content {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+.Profile_section .Profile-info input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.Profile_section .Profile-info span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Stylizacja przycisków edycji */
+.Profile_section .Profile-info button {
+    padding: 10px 20px;
+    background-color: #368be0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.Profile_section .Profile-info button:hover {
+    background-color: #1d6fdb;
+}
+
+.Profile_section .Profile-info button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
 .Profile_section.achievements {
     padding: 20px;
     background-color: #ffffff;
@@ -42,13 +102,11 @@
     overflow-y: auto; /* Włącza przewijanie w pionie, jeśli zawartość jest za długa */
 }
 
-
-
 .Profile_primary-button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #9fa3a6; /* Kolor tła */
+    background-color: #c2c5c7; /* Kolor tła */
     color: #000000; /* Kolor tekstu */
     border: none;
     border-radius: 14px; /* Zaokrąglone rogi */
@@ -56,7 +114,7 @@
 }
 
 .Profile_primary-button:hover {
-    background-color: #368be0; /* Kolor tła przy najechaniu */
+    background-color: #9fa1a3; /* Kolor tła przy najechaniu */
 }
 
 @media (max-width: 768px) {
