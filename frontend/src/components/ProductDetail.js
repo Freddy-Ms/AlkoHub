@@ -57,6 +57,9 @@ const ProductDetail = () => {
     if (userRole === 'Administrator') {
       setIsAdmin(true);
     }
+    if (userRole) {
+      setIsLoggedIn(true);
+    }
   }, []);
 
   const toggleLike = async () => {
@@ -206,6 +209,7 @@ const ProductDetail = () => {
           <div className="product-info">
             <h2>{alkohol.nazwa}</h2>
             <div className="product-attributes">
+              <p><strong>Średnia ocena:</strong> {srednia_ocena} / 5</p>
               <p><strong>Rodzaj:</strong> {alkohol.rodzaj}</p>
               <p><strong>Zawartość procentowa:</strong> {alkohol.zawartosc_procentowa}%</p>
               <p><strong>Rok produkcji:</strong> {alkohol.rok_produkcji}</p>
@@ -305,9 +309,11 @@ const ProductDetail = () => {
       <div className="opinions">
         <div className="opinions-header">
           <h2>Opinie:</h2>
-          <button className="add-opinion-button" onClick={handleAddOpinionClick}>
-            {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
-          </button>
+          {isLoggedIn && (
+            <button className="add-opinion-button" onClick={handleAddOpinionClick}>
+              {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
+            </button>
+          )}
         </div>
 
         {showAddOpinion && (
