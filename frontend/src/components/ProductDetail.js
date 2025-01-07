@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const [hoverRating, setHoverRating] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [alcoholTypes, setAlcoholTypes] = useState([]);
   const [editedAlcohol, setEditedAlcohol] = useState({
     nazwa: '',
     rodzaj: '',
@@ -23,6 +24,7 @@ const ProductDetail = () => {
     rok_produkcji: '',
     opis: '',
   });
+
 
   
   useEffect(() => {
@@ -50,6 +52,24 @@ const ProductDetail = () => {
 
     fetchProductDetails();
   }, [id]);
+
+  useEffect(() => {
+    // Pobierz dane z backendu
+    const fetchAlcoholTypes = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/alcohol_types');
+        if (!response.ok) {
+          throw new Error('Błąd podczas pobierania rodzajów alkoholu');
+        }
+        const data = await response.json();
+        setAlcoholTypes(data);
+      } catch (error) {
+        console.error('Error fetching alcohol types:', error);
+      }
+    };
+
+    fetchAlcoholTypes();
+  }, []);
 
   useEffect(() => {
     // Sprawdzenie, czy użytkownik jest administratorem
@@ -266,14 +286,11 @@ const ProductDetail = () => {
                 value={editedAlcohol.rodzaj}
                 onChange={(e) => setEditedAlcohol({ ...editedAlcohol, rodzaj: e.target.value })}
               >
-                <option value="Piwo">Piwo</option>
-                <option value="Wino">Wino</option>
-                <option value="Whisky">Whisky</option>
-                <option value="Wódka">Wódka</option>
-                <option value="Gin">Gin</option>
-                <option value="Likier">Likier</option>
-                <option value="Rum">Rum</option>
-                <option value="Tequila">Tequila</option>
+                {alcoholTypes.map((type, index) => (
+          <option key={index} value={type}>
+            {type}
+          </option>
+        ))}
               </select>
             </div>
             <label>Zawartość procentowa:</label>
