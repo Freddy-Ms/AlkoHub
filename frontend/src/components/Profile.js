@@ -228,7 +228,11 @@ const Profile = () => {
   };
 
   const handleEditOpinionClick = (feedback) => {
-    setSelectedFeedback(feedback);
+    setSelectedFeedback({
+      ...feedback,
+      ocena: feedback.ocena || "", // Ustawienie domyślnej wartości
+      recenzja: feedback.recenzja || "",
+    });
     setIsEditModalOpen(true);
   };
   
@@ -242,6 +246,7 @@ const Profile = () => {
         },
         body: JSON.stringify({
           recenzja: selectedFeedback.recenzja,
+          ocena: selectedFeedback.ocena
         }),
       });
 
@@ -257,6 +262,25 @@ const Profile = () => {
     }
   };
 
+  const renderRatingStars = (rating, onClick) => {
+    const stars = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={i <= rating ? 'filled' : 'empty'}
+          onClick={() => onClick(i)} // Ustawienie oceny po kliknięciu gwiazdki
+          style={{ cursor: 'pointer' }}
+        >
+          {i <= rating ? '⭐' : '☆'}
+        </span>
+      );
+    }
+  
+    return stars;
+  };
+  
   if (!userInfo) {
     return <div>Loading...</div>; // Wyświetlanie komunikatu "Ładowanie" gdy dane są pobierane
   }
@@ -381,25 +405,21 @@ const Profile = () => {
                   <>
                     <p>
                       <strong>Ocena:</strong>
-                      <input
-                        type="number"
-                        name="ocena"
-                        value={selectedFeedback?.ocena || ''}
-                        onChange={handleChange}
-                        min="1"
-                        max="10"
-                      />
+                      <div className="rating-stars">
+                        {renderRatingStars(selectedFeedback?.ocena || 0, (newRating) => {
+                          setSelectedFeedback({ ...selectedFeedback, ocena: newRating }); // Zaktualizowanie oceny
+                        })}
+                      </div>
                     </p>
                     <textarea
-                      name="recenzja"
+                      className="EditOpinionTextarea"
                       value={selectedFeedback?.recenzja || ''}
-                      onChange={handleChange}
-                      className="FeedbackTextArea"
+                      onChange={(e) => setSelectedFeedback({ ...selectedFeedback, recenzja: e.target.value })}
                     />
                   </>
                 ) : (
                   <>
-                    <p><strong>Ocena:</strong> {feedback.ocena}</p>
+                    <p><strong>Ocena:</strong> {renderRatingStars(feedback.ocena)} </p>
                     <p><strong>Komentarz:</strong> {feedback.recenzja}</p>
                   </>
                 )}
@@ -411,21 +431,6 @@ const Profile = () => {
               >
                 Edytuj
               </button>
-              {isEditModalOpen && (
-                <div className="EditModal">
-                  <div className="ModalContent">
-                    <h4>Edytuj opinię</h4>
-                    <textarea 
-                      className="EditOpinionTextarea"
-                      value={selectedFeedback?.recenzja || ''}
-                      onChange={(e) => setSelectedFeedback({...selectedFeedback, recenzja: e.target.value})}
-                    />
-                    <button className="EditOpinionButton" onClick={handleSaveEdit}>Zapisz</button>
-                    <button className="EditOpinionButton" onClick={() => setIsEditModalOpen(false)}>Anuluj</button>
-                  </div>
-                </div>
-              )}
-
             </div>
           ))
         ) : (
