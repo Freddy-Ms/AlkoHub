@@ -79,7 +79,7 @@ const Homepage = () => {
   return (
     <div className="homepage-container">
       <div className="filter-container">
-        {role === "Administrator" && (
+        {(role === "Administrator" || role === "Degustator") && (
           <button 
             className="AddProductButton"
             onClick={() => window.location.href = "/addProduct"}
