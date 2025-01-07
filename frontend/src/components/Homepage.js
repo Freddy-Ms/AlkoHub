@@ -3,6 +3,8 @@ import ProductCard from './ProductCard';
 import { Link } from 'react-router-dom';
 import '../styles/Homepage.css';
 import '../styles/styles.css';
+import Cookies from "js-cookie";
+const role = Cookies.get("role");
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +15,6 @@ const Homepage = () => {
   const [categories, setCategories] = useState([]); // State for fetched categories
 
   useEffect(() => {
-    // Fetch products from backend
     const fetchProducts = async () => {
       try {
         const query = selectedCategories.length
@@ -78,6 +79,14 @@ const Homepage = () => {
   return (
     <div className="homepage-container">
       <div className="filter-container">
+        {role === "Administrator" && (
+          <button 
+            className="AddProductButton"
+            onClick={() => window.location.href = "/addProduct"}
+          >
+            Dodaj alkohol
+          </button>
+        )}
         <h3>Filtry</h3>
         <div className="filter-item">
           <h4>Rodzaj:</h4>

@@ -404,11 +404,12 @@ margin-right: 10px; /* Odstęp między przyciskami */
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    width: 400px;
+    width: 70%;
+    border-radius: 14px;
   }
 
 .EditOpinionTextarea {
-    width: 300%;
+    width: 97%;
     height: 100px;
     padding: 10px;
     border-radius: 14px;
@@ -420,19 +421,38 @@ margin-right: 10px; /* Odstęp między przyciskami */
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 14px;
     cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
   }
-  
-  /* Styl dla przycisku w formularzu edycji po najechaniu */
+    
   .EditOpinionButton1:hover {
     background-color: #45a049;
   }
-  
-  /* Styl dla drugiego przycisku (np. anuluj) obok przycisku edycji */
-  .EditOpinionButton1 + .EditOpinionButton1 {
+
+  .EditOpinionButton2 {
+    padding: 10px 15px;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
     margin-left: 10px;
   }
+    
+  .EditOpinionButton2:hover {
+    background-color: #ca0000;
+  }
+
+  .EditOpinionButtonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Odstęp między przyciskami */
+    margin-top: 20px; /* Odstęp od góry */
+}
 
   .rating-stars span {
     font-size: 1.5rem;

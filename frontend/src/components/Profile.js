@@ -253,6 +253,7 @@ const Profile = () => {
       if (response.ok) {
         // Aktualizowanie stanu i zamknięcie modalu
         setIsEditModalOpen(false);
+        fetchFeedback(userId);
         window.location.href = 'http://localhost:3000';
       } else {
         console.error('Błąd zapisywania opinii');
@@ -401,28 +402,8 @@ const Profile = () => {
               </a>
               <div className="FeedbackDetails">
                 <p><strong>Produkt:</strong> {feedback.nazwa_alkoholu}</p>
-                {isEditModalOpen && selectedFeedback?.id === feedback.id ? (
-                  <>
-                    <p>
-                      <strong>Ocena:</strong>
-                      <div className="rating-stars">
-                        {renderRatingStars(selectedFeedback?.ocena || 0, (newRating) => {
-                          setSelectedFeedback({ ...selectedFeedback, ocena: newRating }); // Zaktualizowanie oceny
-                        })}
-                      </div>
-                    </p>
-                    <textarea
-                      className="EditOpinionTextarea"
-                      value={selectedFeedback?.recenzja || ''}
-                      onChange={(e) => setSelectedFeedback({ ...selectedFeedback, recenzja: e.target.value })}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <p><strong>Ocena:</strong> {renderRatingStars(feedback.ocena)} </p>
-                    <p><strong>Komentarz:</strong> {feedback.recenzja}</p>
-                  </>
-                )}
+                <p><strong>Ocena:</strong> {renderRatingStars(feedback.ocena)} </p>
+                <p><strong>Komentarz:</strong> {feedback.recenzja}</p>
                 <p><strong>Dodano:</strong> {new Date(feedback.znacznik_czasu).toLocaleDateString()}</p>
               </div>
               <button 
@@ -431,6 +412,29 @@ const Profile = () => {
               >
                 Edytuj
               </button>
+              {isEditModalOpen && (
+                <div className="EditModal">
+                  <div className="ModalContent">
+                    <h4>Edytuj opinię</h4>
+                    <p>
+                      <div className="rating-stars">
+                        {renderRatingStars(selectedFeedback?.ocena || 0, (newRating) => {
+                          setSelectedFeedback({ ...selectedFeedback, ocena: newRating }); // Zaktualizowanie oceny
+                        })}
+                      </div>
+                    </p>
+                    <textarea 
+                      className="EditOpinionTextarea"
+                      value={selectedFeedback?.recenzja || ''}
+                      onChange={(e) => setSelectedFeedback({...selectedFeedback, recenzja: e.target.value})}
+                    />
+                    <div className="EditOpinionButtonContainer">
+                      <button className="EditOpinionButton1" onClick={handleSaveEdit}>Zapisz</button>
+                      <button className="EditOpinionButton2" onClick={() => setIsEditModalOpen(false)}>Anuluj</button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))
         ) : (
