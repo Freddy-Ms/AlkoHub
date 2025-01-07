@@ -92,7 +92,6 @@ const Homepage = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    // Prepare the data for submission
     const { nazwa, rodzaj, opis, zawartosc_procentowa, rok_produkcji, grafika } = newProduct;
 
     const productData = {
@@ -116,7 +115,8 @@ const Homepage = () => {
       const result = await response.json();
       if (response.ok) {
         alert('Alkohol dodany pomyślnie');
-        closeModal(); // Close the modal on success
+        closeModal();
+        window.location.reload();
       } else {
         alert(`Błąd: ${result.message}`);
       }
@@ -196,13 +196,18 @@ const Homepage = () => {
                 Typ:
                 <select 
                   name="rodzaj" 
-                  value={newProduct.id} 
+                  value={newProduct.rodzaj || ""} 
                   onChange={handleInputChange} 
                   required
                 >
-                  {categories.map((category, index) => (
-                    <option key={index} value={category}>{category}</option>
-                  ))}
+                  <option value="" disabled hidden>Wybierz typ</option> 
+                  {categories.length > 0 ? (
+                    categories.map((category, index) => (
+                      <option key={index} value={category}>{category}</option>
+                    ))
+                  ) : (
+                    <option disabled>Brak dostępnych kategorii</option>
+                  )}
                 </select>
               </label>
               <label>
