@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie'; // Dodajemy obsługę cookies
 import '../styles/ProductDetail.css';
+const role = Cookies.get("role");
+const userId = Cookies.get('user_id');
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -24,8 +26,8 @@ const ProductDetail = () => {
     rok_produkcji: '',
     opis: '',
   });
-
-
+  const [hasOpinion, setHasOpinion] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -36,7 +38,6 @@ const ProductDetail = () => {
         setProductData(data);
 
         // Sprawdź, czy produkt jest w ulubionych
-        const userId = Cookies.get('user_id'); // Pobieranie user_id z cookies
         if (userId) {
           setIsLoggedIn(true);
           const likeResponse = await fetch(`http://localhost:5000/is_favorite/${userId}/${id}`);
@@ -72,18 +73,39 @@ const ProductDetail = () => {
   }, []);
 
   useEffect(() => {
-    // Sprawdzenie, czy użytkownik jest administratorem
-    const userRole = Cookies.get('role'); // Załóżmy, że rola jest przechowywana w cookie
-    if (userRole === 'Administrator') {
+    if (role === 'Administrator') {
       setIsAdmin(true);
     }
-    if (userRole) {
+    if (role) {
       setIsLoggedIn(true);
     }
   }, []);
 
+  useEffect(() => {
+    const checkUserOpinion = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:5000/check_user_opinion/${userId}/${id}`);
+        const data = await response.json();
+
+        if (data.exists) {
+          setHasOpinion(true);
+        } else {
+          setHasOpinion(false);
+        }
+      } catch (error) {
+        console.error('Błąd podczas sprawdzania opinii użytkownika:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isLoggedIn && userId && id) {
+      checkUserOpinion();
+    }
+  }, [userId, id, isLoggedIn]);
+
   const toggleLike = async () => {
-    const userId = Cookies.get('user_id');
     if (!userId) {
       navigate('/login');
       return;
@@ -120,7 +142,6 @@ const ProductDetail = () => {
   };
 
   const handleAddOpinionClick = () => {
-    const userId = Cookies.get('user_id');
     if (!userId) {
       navigate('/login');
       return;
@@ -134,7 +155,6 @@ const ProductDetail = () => {
   };
 
   const handleSubmitOpinion = async () => {
-    const userId = Cookies.get('user_id');
     if (!userId) return;
 
     try {
@@ -328,10 +348,14 @@ const ProductDetail = () => {
       <div className="opinions">
         <div className="opinions-header">
           <h2>Opinie:</h2>
-          {isLoggedIn && (
-            <button className="add-opinion-button" onClick={handleAddOpinionClick}>
-              {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
-            </button>
+          {isLoggedIn && !loading && (
+            hasOpinion ? (
+              <p>Już wystawiłeś opinię dla tego produktu. Jeśli chcesz edytować <Link to="/profile">przejdź do profilu. </Link></p>
+            ) : (
+              <button className="add-opinion-button" onClick={handleAddOpinionClick}>
+                {showAddOpinion ? 'Anuluj' : 'Dodaj opinię'}
+              </button>
+            )
           )}
         </div>
 
