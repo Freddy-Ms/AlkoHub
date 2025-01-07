@@ -268,8 +268,9 @@ def add_alkohol():
         opis_alkoholu = data.get('opis')
         zawartosc_procentowa = data.get('zawartosc_procentowa')
         rok_produkcji = data.get('rok_produkcji')
+        image_url = data.get('grafika')
 
-        result, status_code = Alkohol.add_alkohol(rodzaj_alkoholu, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji)
+        result, status_code = Alkohol.add_alkohol(rodzaj_alkoholu, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji, image_url)
         return jsonify(result), status_code
     except Exception as e:
         return jsonify({"message": f"Błąd: {str(e)}"}), 500
