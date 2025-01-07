@@ -155,6 +155,8 @@ class Alkohol(db.Model):
     @staticmethod
     def add_alkohol(rodzaj_alkoholu, nazwa_alkoholu, opis_alkoholu, zawartosc_procentowa, rok_produkcji, image_url):
         try:
+            rodzaj = RodzajAlkoholu.query.filter_by(nazwa=rodzaj_alkoholu).first()
+            rodzaj_alkoholu = rodzaj.id
             nowy_alkohol = Alkohol(
                 rodzaj_alkoholu=rodzaj_alkoholu,
                 nazwa_alkoholu=nazwa_alkoholu,
