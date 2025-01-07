@@ -239,7 +239,7 @@ const Profile = () => {
   const handleSaveEdit = async () => {
     const userId = Cookies.get("user_id");
     try {
-      const response = await fetch(`/update_opinion/${userId}/${selectedFeedback.id_alkoholu}`, {
+      const response = await fetch(`http://localhost:5000/update_opinion/${userId}/${selectedFeedback.id_alkoholu}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -254,7 +254,6 @@ const Profile = () => {
         // Aktualizowanie stanu i zamknięcie modalu
         setIsEditModalOpen(false);
         fetchFeedback(userId);
-        window.location.href = 'http://localhost:3000';
       } else {
         console.error('Błąd zapisywania opinii');
       }

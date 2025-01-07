@@ -84,11 +84,13 @@ class Opinia(db.Model):
 
             if opinia:
                 # Zaktualizowanie opinii
-                opinia.ocena = ocena
-                opinia.recenzja = recenzja
+                if ocena:
+                    opinia.ocena = ocena
+                if recenzja:
+                    opinia.recenzja = recenzja
                 db.session.commit()
 
-                return {'message': 'Opinia została zaktualizowana pomyślnie'}
+                return {'message': 'Opinia została zaktualizowana pomyślnie'}, 200
             else:
                 return {'message': 'Opinia nie została znaleziona'}, 404
 
