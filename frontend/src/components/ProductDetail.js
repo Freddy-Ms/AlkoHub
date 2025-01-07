@@ -235,7 +235,6 @@ const ProductDetail = () => {
       if (!response.ok) throw new Error('Nie udało się zapisać zmian');
       setIsEditing(false);
       window.location.reload()
-      // Możesz dodać jakąś logikę, np. przekierowanie lub odświeżenie strony
     } catch (error) {
       console.error('Błąd przy zapisywaniu zmian:', error);
     }
